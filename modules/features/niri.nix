@@ -81,9 +81,7 @@
       coreBinds = {
         "Mod+Return".spawn-sh = lib.getExe pkgs.ghostty;
         "Mod+Q".close-window = [];
-        # niri's own interactive screenshot mode: drag to select a
-        # region, or click a window to capture just that window.
-        # Confirming saves to screenshot-path below and copies to the
+
         # clipboard; Ctrl+C copies without saving to disk.
         "Print".screenshot = [];
         "Mod+O".spawn-sh = lib.getExe obsidianToggle;
@@ -117,13 +115,7 @@
         "Mod+WheelScrollUp".focus-column-left = [];
       };
 
-      # Ported from omarchy: a searchable hotkey cheat-sheet on Mod+K. Unlike
-      # omarchy's version (which parses hyprland.lua at runtime to recover
-      # descriptions hyprctl's own bind dump loses), the label list here is
-      # generated straight from the binds data below at build time, so a new
-      # bind just shows up without a separate list to keep in sync. The one
-      # place that produces junk automatically is spawn-sh binds (their value
-      # is a resolved store path), so those get a manual label instead.
+      # shortcut label overrides
       bindLabelOverrides = {
         "Mod+Return" = "open a terminal";
         "Mod+O" = "toggle obsidian";
@@ -186,9 +178,6 @@
           layout.default-column-width.proportion = 1.0;
 
           # AOC 27B2 is physically on the right, Sceptre F24 on the left;
-          # niri's connector-discovery order had them backwards.
-          # AOC's stand also sits ~1in (~80px at its 0.315mm/px pitch) taller
-          # than the Sceptre's, so it needs a negative y to line up the seam.
           outputs = {
             "DP-2".position = _: { props = { x = 1920; y = -80; }; };
             "HDMI-A-1".position = _: { props = { x = 0; y = 0; }; };
@@ -206,20 +195,11 @@
               clip-to-geometry = true;
             }
             {
-              # Steam's dropdown/context menus are plain top-level windows
-              # with an empty title (a Steam bug, not niri's); niri focusing
-              # them on open blurs the Steam main window, which hides them.
-              matches = [ { app-id = "^steam$"; title = "^$"; } ];
-              open-focused = false;
-            }
-            {
               matches = [ { app-id = "^md\\.Obsidian$"; } ];
               open-on-workspace = appsWorkspace;
             }
             {
               # Vesktop's .desktop entry lists StartupWMClass=Vesktop, but
-              # Electron apps often report a lowercase Wayland app-id instead;
-              # matching both case forms since it's untested which one niri sees.
               matches = [ { app-id = "^[Vv]esktop$"; } ];
               open-on-workspace = appsWorkspace;
             }

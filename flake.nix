@@ -16,12 +16,12 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Not in nixpkgs yet; upstream ships its own Nix package via this flake.
+    # Not in nixpkgs 
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
 
     # Pinned to the last commit with xwayland-satellite 0.8.1: 0.8.2 breaks
     # Steam's popup menus (a Steam bug in how it draws them, exposed by an
-    # xwayland-satellite override-redirect handling gap - see niri.nix).
+    # xwayland-satellite override-redirect handling gap).
     nixpkgs-xwayland-satellite-081.url = "github:nixos/nixpkgs/a5cbcfe954791221bfffe2307f7d1a1bf61a871e";
   };
 
