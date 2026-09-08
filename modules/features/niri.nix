@@ -77,6 +77,87 @@
         spawnCmd = lib.getExe pkgs.vesktop;
         extraInputs = [ pkgs.vesktop ];
       };
+
+      coreBinds = {
+        "Mod+Return".spawn-sh = lib.getExe pkgs.ghostty;
+        "Mod+Q".close-window = [];
+        # niri's own interactive screenshot mode: drag to select a
+        # region, or click a window to capture just that window.
+        # Confirming saves to screenshot-path below and copies to the
+        # clipboard; Ctrl+C copies without saving to disk.
+        "Print".screenshot = [];
+        "Mod+O".spawn-sh = lib.getExe obsidianToggle;
+        "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
+        "Mod+Space".spawn-sh = "${lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default} msg panel-toggle launcher";
+
+        # Focus window/column (omarchy: SUPER + arrows)
+        "Mod+Left".focus-column-left = [];
+        "Mod+Right".focus-column-right = [];
+        "Mod+Up".focus-window-up = [];
+        "Mod+Down".focus-window-down = [];
+
+        # Move/swap window/column (omarchy: SUPER+SHIFT + arrows)
+        "Mod+Shift+Left".move-column-left = [];
+        "Mod+Shift+Right".move-column-right = [];
+        "Mod+Shift+Up".move-window-up = [];
+        "Mod+Shift+Down".move-window-down = [];
+
+        # Workspace cycling (omarchy: SUPER+TAB / SUPER+SHIFT+TAB / SUPER+CTRL+TAB)
+        "Mod+Tab".focus-workspace-down = [];
+        "Mod+Shift+Tab".focus-workspace-up = [];
+        "Mod+Ctrl+Tab".focus-workspace-previous = [];
+
+        # Resize focused window/column (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
+        "Mod+Minus".set-column-width = "-10%";
+        "Mod+Equal".set-column-width = "+10%";
+
+        # Scroll across the row of columns (omarchy: SUPER + scroll)
+        "Mod+WheelScrollDown".focus-column-right = [];
+        "Mod+WheelScrollUp".focus-column-left = [];
+      };
+
+      # Ported from omarchy: a searchable hotkey cheat-sheet on Mod+K. Unlike
+      # omarchy's version (which parses hyprland.lua at runtime to recover
+      # descriptions hyprctl's own bind dump loses), the label list here is
+      # generated straight from the binds data below at build time, so a new
+      # bind just shows up without a separate list to keep in sync. The one
+      # place that produces junk automatically is spawn-sh binds (their value
+      # is a resolved store path), so those get a manual label instead.
+      bindLabelOverrides = {
+        "Mod+Return" = "open a terminal";
+        "Mod+O" = "toggle obsidian";
+        "Mod+Shift+O" = "toggle vesktop";
+        "Mod+Space" = "open launcher";
+      };
+
+      formatBindValue = v:
+        if v == [ ] then ""
+        else if builtins.isString v then " (${v})"
+        else if builtins.isInt v then " (${toString v})"
+        else "";
+
+      describeBind = key: actionAttrs:
+        let
+          actionName = builtins.head (builtins.attrNames actionAttrs);
+          actionValue = actionAttrs.${actionName};
+        in
+        bindLabelOverrides.${key} or
+          "${lib.replaceStrings [ "-" ] [ " " ] actionName}${formatBindValue actionValue}";
+
+      hotkeyListText = lib.concatLines (
+        lib.mapAttrsToList (key: actionAttrs: "${key}: ${describeBind key actionAttrs}")
+          (coreBinds // workspaceBinds)
+      );
+
+      showHotkeys = pkgs.writeShellApplication {
+        name = "niri-show-hotkeys";
+        runtimeInputs = [ inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+        text = ''
+          cat <<'EOF' | noctalia dmenu --prompt "Keybindings" >/dev/null
+          ${hotkeyListText}
+          EOF
+        '';
+      };
     in
     {
       packages.myNiri = inputs.wrapper-modules.wrappers.niri.wrap {
@@ -143,43 +224,9 @@
             }
           ];
 
-          binds = {
-            "Mod+Return".spawn-sh = lib.getExe pkgs.ghostty;
-            "Mod+Q".close-window = [];
-            # niri's own interactive screenshot mode: drag to select a
-            # region, or click a window to capture just that window.
-            # Confirming saves to screenshot-path below and copies to the
-            # clipboard; Ctrl+C copies without saving to disk.
-            "Print".screenshot = [];
-            "Mod+O".spawn-sh = lib.getExe obsidianToggle;
-            "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
-            "Mod+Space".spawn-sh = "${lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default} msg panel-toggle launcher";
-
-            # Focus window/column (omarchy: SUPER + arrows)
-            "Mod+Left".focus-column-left = [];
-            "Mod+Right".focus-column-right = [];
-            "Mod+Up".focus-window-up = [];
-            "Mod+Down".focus-window-down = [];
-
-            # Move/swap window/column (omarchy: SUPER+SHIFT + arrows)
-            "Mod+Shift+Left".move-column-left = [];
-            "Mod+Shift+Right".move-column-right = [];
-            "Mod+Shift+Up".move-window-up = [];
-            "Mod+Shift+Down".move-window-down = [];
-
-            # Workspace cycling (omarchy: SUPER+TAB / SUPER+SHIFT+TAB / SUPER+CTRL+TAB)
-            "Mod+Tab".focus-workspace-down = [];
-            "Mod+Shift+Tab".focus-workspace-up = [];
-            "Mod+Ctrl+Tab".focus-workspace-previous = [];
-
-            # Resize focused window/column (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
-            "Mod+Minus".set-column-width = "-10%";
-            "Mod+Equal".set-column-width = "+10%";
-
-            # Scroll across the row of columns (omarchy: SUPER + scroll)
-            "Mod+WheelScrollDown".focus-column-right = [];
-            "Mod+WheelScrollUp".focus-column-left = [];
-          } // workspaceBinds;
+          binds = coreBinds // workspaceBinds // {
+            "Mod+K".spawn-sh = lib.getExe showHotkeys;
+          };
         };
       };
     };
