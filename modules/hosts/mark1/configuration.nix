@@ -102,7 +102,7 @@
       neovim
       vscodium
       obsidian
-      discord
+      vesktop
       btop
       ghostty
       openssh

@@ -34,7 +34,7 @@
       );
 
       # Hyprland "special workspace" equivalent, adapted for niri's scrolling
-      # columns: Obsidian and Discord share one "apps" workspace (as separate
+      # columns: Obsidian and Vesktop share one "apps" workspace (as separate
       # columns you can scroll between) instead of one workspace each, since
       # niri workspaces are per-monitor and juggling two of them was awkward.
       # Each app still gets its own hotkey: it focuses that app's window
@@ -72,10 +72,10 @@
         extraInputs = [ pkgs.obsidian ];
       };
 
-      discordToggle = mkAppWorkspaceToggle {
-        appId = "discord";
-        spawnCmd = lib.getExe pkgs.discord;
-        extraInputs = [ pkgs.discord ];
+      vesktopToggle = mkAppWorkspaceToggle {
+        appId = "vesktop";
+        spawnCmd = lib.getExe pkgs.vesktop;
+        extraInputs = [ pkgs.vesktop ];
       };
     in
     {
@@ -84,11 +84,15 @@
         settings = {
           xwayland-satellite.path = lib.getExe pkgs.xwayland-satellite;
 
+          screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+
           input.keyboard.xkb.layout = "us";
-          # Focus the window under the cursor on hover instead of requiring
-          # a click; max-scroll-amount=0% keeps it from auto-scrolling the
-          # view to bring partially off-screen columns into focus.
-          input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
+          # focus-follows-mouse was tried, but niri has no way to exempt
+          # specific windows from it (unlike Hyprland's stayfocused
+          # windowrule/mouse_refocus), and Steam's dropdown menus - which
+          # are plain top-level windows instead of proper popups - close
+          # themselves the instant hovering shifts focus away from them.
+          # Click-to-focus avoids that at the cost of hover-to-focus.
 
           cursor.xcursor-size = 20;
           cursor.xcursor-theme = "Adwaita";
@@ -114,7 +118,10 @@
               open-on-workspace = appsWorkspace;
             }
             {
-              matches = [ { app-id = "^discord$"; } ];
+              # Vesktop's .desktop entry lists StartupWMClass=Vesktop, but
+              # Electron apps often report a lowercase Wayland app-id instead;
+              # matching both case forms since it's untested which one niri sees.
+              matches = [ { app-id = "^[Vv]esktop$"; } ];
               open-on-workspace = appsWorkspace;
             }
           ];
@@ -122,8 +129,13 @@
           binds = {
             "Mod+Return".spawn-sh = lib.getExe pkgs.ghostty;
             "Mod+Q".close-window = [];
+            # niri's own interactive screenshot mode: drag to select a
+            # region, or click a window to capture just that window.
+            # Confirming saves to screenshot-path below and copies to the
+            # clipboard; Ctrl+C copies without saving to disk.
+            "Print".screenshot = [];
             "Mod+O".spawn-sh = lib.getExe obsidianToggle;
-            "Mod+Shift+O".spawn-sh = lib.getExe discordToggle;
+            "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
             "Mod+Space".spawn-sh = "${lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default} msg panel-toggle launcher";
 
             # Focus window/column (omarchy: SUPER + arrows)
