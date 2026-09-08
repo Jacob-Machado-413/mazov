@@ -18,6 +18,7 @@
      self.nixosModules.docker
      self.nixosModules.fonts
      self.nixosModules.retroarch
+     self.nixosModules.gnome
     ];
 
   programs.noctalia = {
@@ -58,11 +59,6 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
-  # Enable the GNOME Desktop Environment. GDM is disabled since
-  # noctalia-greeter (self.nixosModules.noctaliaGreeter) is the login screen.
-  services.displayManager.gdm.enable = false;
-  services.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
