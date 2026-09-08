@@ -17,6 +17,7 @@
      self.nixosModules.eza
      self.nixosModules.docker
      self.nixosModules.fonts
+     self.nixosModules.retroarch
     ];
 
   programs.noctalia = {
@@ -103,17 +104,31 @@
       vscodium
       obsidian
       vesktop
+      chromium
       btop
       ghostty
       openssh
-      (retroarch.withCores (libretro: [ libretro.bsnes ]))
+      prismlauncher
+      wine
+      bottles
       anki
       jujutsu
       rendercv
       audacity
       odin
+      ols
+      dotnet-sdk_10
+      obs-studio
+      spotify-player
+      localsend
+      fastfetch
+      tesseract
       cmatrix
       fzf
+      tldr
+      yazi
+      imagemagick
+      gdb
       gh
       godot
       lazygit
