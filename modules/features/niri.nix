@@ -89,6 +89,7 @@
         "Mod+O".spawn-sh = lib.getExe obsidianToggle;
         "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
         "Mod+Space".spawn-sh = "${lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default} msg panel-toggle launcher";
+        "Mod+F".fullscreen-window = [];
 
         # Focus window/column (omarchy: SUPER + arrows)
         "Mod+Left".focus-column-left = [];
