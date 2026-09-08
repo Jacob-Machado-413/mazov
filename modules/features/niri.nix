@@ -82,17 +82,20 @@
       packages.myNiri = inputs.wrapper-modules.wrappers.niri.wrap {
         inherit pkgs;
         settings = {
-          xwayland-satellite.path = lib.getExe pkgs.xwayland-satellite;
+          # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus (see
+          # the flake input comment for the underlying bug).
+          xwayland-satellite.path = lib.getExe inputs.nixpkgs-xwayland-satellite-081.legacyPackages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite;
 
           screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
+          # Ask CSD-capable apps (mostly GTK) to drop their own titlebar/chrome
+          # so windows reclaim that space; closing stays on Mod+Q instead.
+          prefer-no-csd = true;
+
           input.keyboard.xkb.layout = "us";
-          # focus-follows-mouse was tried, but niri has no way to exempt
-          # specific windows from it (unlike Hyprland's stayfocused
-          # windowrule/mouse_refocus), and Steam's dropdown menus - which
-          # are plain top-level windows instead of proper popups - close
-          # themselves the instant hovering shifts focus away from them.
-          # Click-to-focus avoids that at the cost of hover-to-focus.
+          # Focus the window under the cursor on hover; max-scroll-amount=0%
+          # stops it from auto-scrolling to bring off-screen columns into focus.
+          input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
 
           cursor.xcursor-size = 20;
           cursor.xcursor-theme = "Adwaita";
@@ -113,6 +116,20 @@
           workspaces."${appsWorkspace}".open-on-output = "HDMI-A-1";
 
           window-rules = [
+            {
+              # No matches = applies to every window; enforces a small
+              # corner radius regardless of what each app would draw itself.
+              matches = [ ];
+              geometry-corner-radius = 4;
+              clip-to-geometry = true;
+            }
+            {
+              # Steam's dropdown/context menus are plain top-level windows
+              # with an empty title (a Steam bug, not niri's); niri focusing
+              # them on open blurs the Steam main window, which hides them.
+              matches = [ { app-id = "^steam$"; title = "^$"; } ];
+              open-focused = false;
+            }
             {
               matches = [ { app-id = "^md\\.Obsidian$"; } ];
               open-on-workspace = appsWorkspace;
