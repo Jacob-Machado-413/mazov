@@ -9,7 +9,10 @@
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  # nvidia/nvidia_modeset/nvidia_drm aren't X-gated here like the NixOS nvidia
+  # module's own list - services.xserver.enable is false (niri is Wayland-only),
+  # so without this they'd depend on udev autoloading them correctly.
+  boot.kernelModules = [ "kvm-amd" "nvidia" "nvidia_modeset" "nvidia_drm" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
@@ -29,5 +32,16 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.nvidia = {
+    # GTX 1080 Ti is Pascal, which newer driver branches (595.x+) dropped -
+    # legacy_580 is the last branch that still supports Maxwell/Pascal/Volta.
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    # Required (no default) on driver >=560; open kernel modules only support
+    # Turing and later, which this Pascal-era card predates.
+    open = false;
+  };
 };
 }
