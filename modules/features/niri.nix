@@ -7,13 +7,11 @@
 
     # niri's own cursor.xcursor-theme/size (below) only covers native Wayland
     # clients. XWayland apps (Steam, Proton games) read XCURSOR_THEME/SIZE
-    # from the environment instead, so without these they fall back to a
-    # mismatched default theme/size (e.g. Steam's two-finger pinch cursor).
     environment.sessionVariables = {
-      XCURSOR_THEME = "Adwaita";
+      XCURSOR_THEME = "Bibata-Modern-Ice";
       XCURSOR_SIZE = "20";
     };
-    environment.systemPackages = [ pkgs.adwaita-icon-theme ];
+    environment.systemPackages = [ pkgs.bibata-cursors pkgs.adwaita-icon-theme ];
   };
 
   perSystem = { pkgs, lib, ... }:
@@ -262,7 +260,7 @@
           gestures.hot-corners.off = _: { };
 
           cursor.xcursor-size = 20;
-          cursor.xcursor-theme = "Adwaita";
+          cursor.xcursor-theme = "Bibata-Modern-Ice";
 
           layout.gaps = 4;
           layout.default-column-width.proportion = 1.0;
