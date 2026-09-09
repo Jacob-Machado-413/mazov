@@ -18,6 +18,12 @@
 
   perSystem = { pkgs, lib, ... }:
     let
+      noctaliaExe = lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      ghosttyExe = lib.getExe pkgs.ghostty;
+
+      noctalia = cmd: "${noctaliaExe} msg ${cmd}";
+      inTerminal = cmd: "${ghosttyExe} -e ${cmd}";
+
       # Ported from omarchy: SUPER+1..9,0 focuses workspace 1..10;
       # SUPER+SHIFT+1..9,0 moves the focused window there too.
       workspaceBinds = lib.listToAttrs (
@@ -33,14 +39,7 @@
           (lib.range 1 10)
       );
 
-      # Hyprland "special workspace" equivalent, adapted for niri's scrolling
-      # columns: Obsidian and Vesktop share one "apps" workspace (as separate
-      # columns you can scroll between) instead of one workspace each, since
-      # niri workspaces are per-monitor and juggling two of them was awkward.
-      # Each app still gets its own hotkey: it focuses that app's window
-      # directly (spawning it into the shared workspace if not running yet),
-      # and toggles back to whatever you were on before if that app is
-      # already focused.
+      #mimicing omarchy/hyprland 'scratchpad' with a named workspace. its 80% as good
       appsWorkspace = "apps";
       mkAppWorkspaceToggle = { appId, spawnCmd, extraInputs ? [ ] }:
         pkgs.writeShellApplication {
@@ -79,14 +78,13 @@
       };
 
       coreBinds = {
-        "Mod+Return".spawn-sh = lib.getExe pkgs.ghostty;
+        "Mod+Return".spawn-sh = ghosttyExe;
         "Mod+Q".close-window = [];
 
-        # clipboard; Ctrl+C copies without saving to disk.
         "Print".screenshot = [];
         "Mod+O".spawn-sh = lib.getExe obsidianToggle;
         "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
-        "Mod+Space".spawn-sh = "${lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default} msg panel-toggle launcher";
+        "Mod+Space".spawn-sh = noctalia "panel-toggle launcher";
         "Mod+F".fullscreen-window = [];
 
         # Focus window/column (omarchy: SUPER + arrows)
@@ -115,13 +113,100 @@
         "Mod+WheelScrollUp".focus-column-left = [];
       };
 
+      windowBinds = {
+        "Mod+T".toggle-window-floating = [];
+        "Mod+Alt+F".maximize-column = [];
+        "Mod+Ctrl+F".toggle-windowed-fullscreen = [];
+
+        # niri's tabbed columns stand in for omarchy's window groups.
+        "Mod+G".toggle-column-tabbed-display = [];
+        "Mod+Alt+Left".consume-or-expel-window-left = [];
+        "Mod+Alt+Right".consume-or-expel-window-right = [];
+
+        # noctalia's window-switcher stays unbound; it suits umbriel, not niri.
+        "Alt+Tab".toggle-overview = [];
+        "Ctrl+Alt+Tab".focus-monitor-next = [];
+        "Ctrl+Alt+Shift+Tab".focus-monitor-previous = [];
+        "Mod+Alt+Shift+Left".move-workspace-to-monitor-left = [];
+        "Mod+Alt+Shift+Right".move-workspace-to-monitor-right = [];
+
+        # Print alone opens the interactive region UI; these skip the picker.
+        "Ctrl+Print".screenshot-screen = [];
+        "Alt+Print".screenshot-window = [];
+      };
+
+      systemBinds = {
+        "Mod+Ctrl+V".spawn-sh = noctalia "panel-toggle clipboard";
+        "Mod+Ctrl+E".spawn-sh = noctalia "panel-toggle launcher /emo";
+        "Mod+Ctrl+L".spawn-sh = noctalia "session lock";
+        "Mod+Escape".spawn-sh = noctalia "panel-toggle session";
+        "Mod+Shift+Space".spawn-sh = noctalia "bar-toggle";
+
+        "Mod+Ctrl+A".spawn-sh = noctalia "panel-open control-center audio";
+        "Mod+Ctrl+B".spawn-sh = noctalia "panel-open control-center bluetooth";
+        "Mod+Ctrl+W".spawn-sh = noctalia "panel-open control-center network";
+        "Mod+Ctrl+D".spawn-sh = noctalia "panel-open control-center monitor";
+
+        "Mod+Ctrl+N".spawn-sh = noctalia "nightlight-toggle";
+        "Mod+Ctrl+I".spawn-sh = noctalia "caffeine-toggle";
+        "Mod+Ctrl+Space".spawn-sh = noctalia "wallpaper-next";
+
+        "Mod+Comma".spawn-sh = noctalia "notification-clear-active";
+        "Mod+Shift+Comma".spawn-sh = noctalia "notification-clear-history";
+        "Mod+Alt+Comma".spawn-sh = noctalia "notification-invoke-latest";
+        "Mod+Ctrl+Comma".spawn-sh = noctalia "notification-dnd-toggle";
+      };
+
+      appBinds = {
+        "Mod+Shift+B".spawn-sh = lib.getExe inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        "Mod+Shift+N".spawn-sh = lib.getExe pkgs.vscodium;
+        "Mod+Shift+F".spawn-sh = lib.getExe pkgs.nautilus;
+        "Mod+Ctrl+T".spawn-sh = inTerminal (lib.getExe pkgs.btop);
+        "Mod+Shift+M".spawn-sh = inTerminal (lib.getExe pkgs.spotify-player);
+        "Mod+Shift+Ctrl+A".spawn-sh = inTerminal (lib.getExe pkgs.claude-code);
+        "XF86Calculator".spawn-sh = lib.getExe pkgs.gnome-calculator;
+      };
+
+      # Bare action set, so these still land in the cheat sheet; the binds
+      # themselves get wrapped below to keep working on the lock screen.
+      mediaActions = {
+        "XF86AudioRaiseVolume".spawn-sh = noctalia "volume-up";
+        "XF86AudioLowerVolume".spawn-sh = noctalia "volume-down";
+        "XF86AudioMute".spawn-sh = noctalia "volume-mute";
+        "XF86AudioMicMute".spawn-sh = noctalia "mic-mute";
+        "XF86AudioPlay".spawn-sh = noctalia "media toggle";
+        "XF86AudioNext".spawn-sh = noctalia "media next";
+        "XF86AudioPrev".spawn-sh = noctalia "media previous";
+        "XF86MonBrightnessUp".spawn-sh = noctalia "brightness-up";
+        "XF86MonBrightnessDown".spawn-sh = noctalia "brightness-down";
+      };
+
+      lockedBinds = lib.mapAttrs
+        (_: action: _: {
+          props.allow-when-locked = true;
+          content = action;
+        })
+        mediaActions;
+
+      plainBinds = coreBinds // workspaceBinds // windowBinds // systemBinds // appBinds // mediaActions;
+
       # shortcut label overrides
       bindLabelOverrides = {
         "Mod+Return" = "open a terminal";
         "Mod+O" = "toggle obsidian";
         "Mod+Shift+O" = "toggle vesktop";
         "Mod+Space" = "open launcher";
+        "Mod+Shift+B" = "browser";
+        "Mod+Shift+N" = "editor";
+        "Mod+Shift+F" = "file manager";
       };
+
+      # Store paths swamp the cheat sheet; only the program name is useful.
+      stripStorePaths = cmd:
+        lib.concatStringsSep " " (
+          map (tok: if lib.hasPrefix builtins.storeDir tok then baseNameOf tok else tok)
+            (lib.splitString " " cmd)
+        );
 
       formatBindValue = v:
         if v == [ ] then ""
@@ -134,12 +219,15 @@
           actionName = builtins.head (builtins.attrNames actionAttrs);
           actionValue = actionAttrs.${actionName};
         in
-        bindLabelOverrides.${key} or
-          "${lib.replaceStrings [ "-" ] [ " " ] actionName}${formatBindValue actionValue}";
+        bindLabelOverrides.${key} or (
+          if actionName == "spawn-sh"
+          then stripStorePaths actionValue
+          else "${lib.replaceStrings [ "-" ] [ " " ] actionName}${formatBindValue actionValue}"
+        );
 
       hotkeyListText = lib.concatLines (
         lib.mapAttrsToList (key: actionAttrs: "${key}: ${describeBind key actionAttrs}")
-          (coreBinds // workspaceBinds)
+          plainBinds
       );
 
       showHotkeys = pkgs.writeShellApplication {
@@ -170,6 +258,10 @@
           # Focus the window under the cursor on hover; max-scroll-amount=0%
           # stops it from auto-scrolling to bring off-screen columns into focus.
           input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
+
+          # The top-left hot corner opens the overview on any stray cursor
+          # trip into that corner; Alt+Tab covers it instead.
+          gestures.hot-corners.off = _: { };
 
           cursor.xcursor-size = 20;
           cursor.xcursor-theme = "Adwaita";
@@ -205,7 +297,7 @@
             }
           ];
 
-          binds = coreBinds // workspaceBinds // {
+          binds = plainBinds // lockedBinds // {
             "Mod+K".spawn-sh = lib.getExe showHotkeys;
           };
         };
