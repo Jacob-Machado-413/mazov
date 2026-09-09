@@ -167,12 +167,12 @@
         "XF86Calculator".spawn-sh = lib.getExe pkgs.gnome-calculator;
       };
 
-      # Bare action set, so these still land in the cheat sheet; the binds
-      # themselves get wrapped below to keep working on the lock screen.
       mediaActions = {
         "XF86AudioRaiseVolume".spawn-sh = noctalia "volume-up";
         "XF86AudioLowerVolume".spawn-sh = noctalia "volume-down";
         "XF86AudioMute".spawn-sh = noctalia "volume-mute";
+
+        #MY keyboard does not actually have these, but keep.
         "XF86AudioMicMute".spawn-sh = noctalia "mic-mute";
         "XF86AudioPlay".spawn-sh = noctalia "media toggle";
         "XF86AudioNext".spawn-sh = noctalia "media next";
@@ -251,7 +251,6 @@
           screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
           # Ask CSD-capable apps (mostly GTK) to drop their own titlebar/chrome
-          # so windows reclaim that space; closing stays on Mod+Q instead.
           prefer-no-csd = true;
 
           input.keyboard.xkb.layout = "us";
@@ -259,7 +258,6 @@
           # stops it from auto-scrolling to bring off-screen columns into focus.
           input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
 
-          # The top-left hot corner opens the overview on any stray cursor
           # trip into that corner; Alt+Tab covers it instead.
           gestures.hot-corners.off = _: { };
 
@@ -281,7 +279,6 @@
           window-rules = [
             {
               # No matches = applies to every window; enforces a small
-              # corner radius regardless of what each app would draw itself.
               matches = [ ];
               geometry-corner-radius = 4;
               clip-to-geometry = true;
@@ -294,6 +291,19 @@
               # Vesktop's .desktop entry lists StartupWMClass=Vesktop, but
               matches = [ { app-id = "^[Vv]esktop$"; } ];
               open-on-workspace = appsWorkspace;
+            }
+            {
+              matches = [ { app-id = "^org\\.gnome\\.Calculator$"; } ];
+              open-floating = true;
+              default-column-width.fixed = 400;
+              default-window-height.fixed = 600;
+            }
+            {
+              # Zen's PiP player sets this exact title; floating keeps it off
+              # the scrolling row, where default-column-width would stretch it
+              # to the full screen.
+              matches = [ { app-id = "^zen-beta$"; title = "^Picture-in-Picture$"; } ];
+              open-floating = true;
             }
           ];
 

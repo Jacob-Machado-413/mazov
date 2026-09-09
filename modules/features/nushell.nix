@@ -9,6 +9,10 @@
           mkdir -p $out/share/nushell/vendor/autoload
           ${lib.getExe pkgs.starship} init nu > $out/share/nushell/vendor/autoload/starship-init.nu
         '')
+
+        (pkgs.writeTextDir "share/nushell/vendor/autoload/aliases.nu" ''
+          alias la = ls -a
+        '')
       ];
     };
 
