@@ -121,6 +121,8 @@
       tesseract
       cmatrix
       fzf
+      ripgrep
+      fd
       tldr
       yazi
       imagemagick
