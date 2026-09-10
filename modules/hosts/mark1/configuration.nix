@@ -20,6 +20,7 @@
      self.nixosModules.retroarch
      self.nixosModules.gnome
      self.nixosModules.xcompose
+     self.nixosModules.webapps
      inputs.home-manager.nixosModules.home-manager
     ];
 
