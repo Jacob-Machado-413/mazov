@@ -5,8 +5,7 @@
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.myNiri;
     };
 
-    # niri's own cursor.xcursor-theme/size (below) only covers native Wayland
-    # clients. XWayland apps (Steam, Proton games) read XCURSOR_THEME/SIZE
+    #XWayland apps (Steam, Proton games) read XCURSOR_THEME/SIZE
     environment.sessionVariables = {
       XCURSOR_THEME = "Bibata-Modern-Ice";
       XCURSOR_SIZE = "20";
@@ -23,7 +22,6 @@
       inTerminal = cmd: "${ghosttyExe} -e ${cmd}";
 
       # Ported from omarchy: SUPER+1..9,0 focuses workspace 1..10;
-      # SUPER+SHIFT+1..9,0 moves the focused window there too.
       workspaceBinds = lib.listToAttrs (
         lib.concatMap
           (n:
@@ -105,6 +103,10 @@
         # Resize focused window/column (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
         "Mod+Minus".set-column-width = "-10%";
         "Mod+Equal".set-column-width = "+10%";
+
+        # Same pair with SHIFT resizes vertically (omarchy: SUPER+SHIFT+MINUS/EQUAL)
+        "Mod+Shift+Minus".set-window-height = "-10%";
+        "Mod+Shift+Equal".set-window-height = "+10%";
 
         # Scroll across the row of columns (omarchy: SUPER + scroll)
         "Mod+WheelScrollDown".focus-column-right = [];
@@ -242,8 +244,7 @@
       packages.myNiri = inputs.wrapper-modules.wrappers.niri.wrap {
         inherit pkgs;
         settings = {
-          # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus (see
-          # the flake input comment for the underlying bug).
+          # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus (see the flake input comment for the underlying bug).
           xwayland-satellite.path = lib.getExe inputs.nixpkgs-xwayland-satellite-081.legacyPackages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite;
 
           screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
@@ -252,8 +253,10 @@
           prefer-no-csd = true;
 
           input.keyboard.xkb.layout = "us";
-          # Focus the window under the cursor on hover; max-scroll-amount=0%
-          # stops it from auto-scrolling to bring off-screen columns into focus.
+          # Caps Lock becomes Compose (Multi_key), feeding the sequences in ~/.XCompose; 
+          input.keyboard.xkb.options = "compose:caps,shift:both_capslock";
+
+          
           input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
 
           # trip into that corner; Alt+Tab covers it instead.
@@ -286,7 +289,7 @@
               open-on-workspace = appsWorkspace;
             }
             {
-              # Vesktop's .desktop entry lists StartupWMClass=Vesktop, but
+              # Vesktop's .desktop entry lists StartupWMClass=Vesktop
               matches = [ { app-id = "^[Vv]esktop$"; } ];
               open-on-workspace = appsWorkspace;
             }
@@ -297,11 +300,11 @@
               default-window-height.fixed = 600;
             }
             {
-              # Zen's PiP player sets this exact title; floating keeps it off
-              # the scrolling row, where default-column-width would stretch it
-              # to the full screen.
+              # Zen's PiP player sets this exact title.
               matches = [ { app-id = "^zen-beta$"; title = "^Picture-in-Picture$"; } ];
               open-floating = true;
+              default-column-width.fixed = 480;
+              default-window-height.fixed = 270;
             }
           ];
 
