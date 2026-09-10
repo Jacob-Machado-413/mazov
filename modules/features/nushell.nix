@@ -16,8 +16,8 @@
       ];
     };
 
-    # nushell is the default login shell (set per-user in the host config);
-    # bash stays available as a normal fallback.
+    # nushell is the default login shell;
+    # bash stays available as fallback.
     environment.shells = [ pkgs.nushell pkgs.bash ];
   };
 }

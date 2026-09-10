@@ -1,6 +1,6 @@
 {self,inputs,...}: {
 
-  flake.nixosModules.mark1Configuration = {pkgs,lib, ...}: let
+  flake.nixosModules.mark1Configuration = {pkgs,lib,config, ...}: let
     system = pkgs.stdenv.hostPlatform.system;
   in {
   imports =
@@ -19,11 +19,44 @@
      self.nixosModules.fonts
      self.nixosModules.retroarch
      self.nixosModules.gnome
+     self.nixosModules.xcompose
+     inputs.home-manager.nixosModules.home-manager
     ];
 
   programs.noctalia = {
     enable = true;
     systemd.enable = true;
+  };
+
+  # home-manager is here only to deliver LazyVim; everything else on this host
+  # stays NixOS-managed.
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+
+    users."phyllistine" = { ... }: {
+      imports = [ inputs.lazyvim.homeManagerModules.default ];
+      home.stateVersion = config.system.stateVersion;
+
+      programs.lazyvim = {
+        enable = true;
+
+        # installDependencies pulls each extra's tools (rust-analyzer,
+        # csharpier, sqlfluff, ...); runtime deps come from this host already.
+        extras = {
+          ai.claudecode.enable = true;
+          # LazyVim turns blink on by default at runtime; declaring it is what
+          # puts it in the nix dev path instead of being cloned.
+          coding.blink.enable = true;
+          coding.yanky.enable = true;
+          lang.dotnet = { enable = true; installDependencies = true; };
+          lang.nix = { enable = true; installDependencies = true; };
+          lang.nushell.enable = true;
+          lang.rust = { enable = true; installDependencies = true; };
+          lang.sql = { enable = true; installDependencies = true; };
+        };
+      };
+    };
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -96,7 +129,6 @@
     packages = with pkgs; [
     #  thunderbird
       claude-code
-      neovim
       vscodium
       obsidian
       vesktop
@@ -128,6 +160,7 @@
       imagemagick
       gdb
       gh
+      glib #gdbus, which noctalia's template reload scripts use to tell ghostty to
       godot
       lazygit
       python3
@@ -138,18 +171,12 @@
     ];
   };
 
-  # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+ 
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -159,21 +186,6 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

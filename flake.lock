@@ -18,7 +18,45 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788988965,
+        "narHash": "sha256-7xl3XjXv2uVxe/18efxaKYsMD7skQqCx/YSWw/lI3w8=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "448c15a7fe6aa7693f63b9e8d1803bdc3dd6368d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-manager_2": {
       "inputs": {
         "nixpkgs": [
           "zen-browser",
@@ -51,6 +89,28 @@
       "original": {
         "owner": "vic",
         "repo": "import-tree",
+        "type": "github"
+      }
+    },
+    "lazyvim": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788968931,
+        "narHash": "sha256-ir2bZRoAIkUx27rCiSRZCtTnrXNRmQr7De6aaZfTsHM=",
+        "owner": "pfassina",
+        "repo": "lazyvim-nix",
+        "rev": "5927b39c7a46fd32d5c5592ecff99ca37b6d721e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pfassina",
+        "ref": "v16.0.1",
+        "repo": "lazyvim-nix",
         "type": "github"
       }
     },
@@ -214,7 +274,9 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
+        "home-manager": "home-manager",
         "import-tree": "import-tree",
+        "lazyvim": "lazyvim",
         "millennium": "millennium",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-xwayland-satellite-081": "nixpkgs-xwayland-satellite-081",
@@ -222,6 +284,21 @@
         "noctalia-greeter": "noctalia-greeter",
         "wrapper-modules": "wrapper-modules",
         "zen-browser": "zen-browser"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
       }
     },
     "wrapper-modules": {
@@ -244,7 +321,7 @@
     },
     "zen-browser": {
       "inputs": {
-        "home-manager": "home-manager",
+        "home-manager": "home-manager_2",
         "nixpkgs": [
           "nixpkgs"
         ]

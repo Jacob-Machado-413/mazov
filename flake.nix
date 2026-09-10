@@ -7,6 +7,14 @@
 
     wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
 
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Pinned to the tag whose generated plugin set matches LazyVim v16.0.1;
+    # its main branch tracks LazyVim releases as they land.
+    lazyvim.url = "github:pfassina/lazyvim-nix/v16.0.1";
+    lazyvim.inputs.nixpkgs.follows = "nixpkgs";
+
     noctalia.url = "github:noctalia-dev/noctalia";
     noctalia.inputs.nixpkgs.follows = "nixpkgs";
 
