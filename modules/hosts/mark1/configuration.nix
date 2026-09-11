@@ -21,6 +21,7 @@
      self.nixosModules.gnome
      self.nixosModules.xcompose
      self.nixosModules.webapps
+     self.nixosModules.flutter
      inputs.home-manager.nixosModules.home-manager
     ];
 
@@ -132,6 +133,7 @@
       claude-code
       vscodium
       obsidian
+      basalt
       vesktop
       chromium
       btop
@@ -157,6 +159,7 @@
       ripgrep
       fd
       tldr
+      todo
       yazi
       imagemagick
       gdb
