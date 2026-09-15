@@ -158,6 +158,7 @@
       fzf
       ripgrep
       fd
+      tokei
       tldr
       todo
       yazi
