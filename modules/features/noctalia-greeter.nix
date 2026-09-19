@@ -2,7 +2,7 @@
   flake.nixosModules.noctaliaGreeter = {
     imports = [ inputs.noctalia-greeter.nixosModules.default ];
 
-    programs.noctalia-greeter = {
+    services.displayManager.noctalia-greeter = {
       enable = true;
       settings = {
         # Mirrors the output layout in niri.nix (DP-2 right of HDMI-A-1);
