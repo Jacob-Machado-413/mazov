@@ -117,7 +117,7 @@
 
     # Use the WirePlumber session manager
     #wireplumber.enable = true;
-  };
+  }; 
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
@@ -131,7 +131,9 @@
     packages = with pkgs; [
     #  thunderbird
       claude-code
+      calibre
       vscodium
+      vscode
       obsidian
       basalt
       vesktop
@@ -150,11 +152,11 @@
       ols
       dotnet-sdk_10
       obs-studio
-      spotify-player
+      spotify
       localsend
       fastfetch
       tesseract
-      cmatrix
+      unimatrix
       fzf
       ripgrep
       fd
