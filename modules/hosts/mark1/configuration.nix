@@ -174,6 +174,9 @@
       rustc
       cargo
       yt-dlp
+      kdePackages.ocean-sound-theme
+      pantheon.elementary-sound-theme
+      nix-search-tv
       inputs.zen-browser.packages.${system}.default
     ];
   };
