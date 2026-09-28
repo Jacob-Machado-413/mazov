@@ -77,7 +77,7 @@
         "Mod+Return".spawn-sh = ghosttyExe;
         "Mod+Q".close-window = [];
 
-        "Print".screenshot = [];
+        "Print".spawn-sh = noctalia "screenshot-region";
         "Mod+O".spawn-sh = lib.getExe obsidianToggle;
         "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
         "Mod+Space".spawn-sh = noctalia "panel-toggle launcher";
@@ -130,7 +130,7 @@
         "Mod+Alt+Shift+Left".move-workspace-to-monitor-left = [];
         "Mod+Alt+Shift+Right".move-workspace-to-monitor-right = [];
 
-        # Print alone opens the interactive region UI; these skip the picker.
+        # niri's own capture, kept for shots without annotation.
         "Ctrl+Print".screenshot-screen = [];
         "Alt+Print".screenshot-window = [];
       };
