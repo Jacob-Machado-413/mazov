@@ -11,6 +11,43 @@
       XCURSOR_SIZE = "20";
     };
     environment.systemPackages = [ pkgs.bibata-cursors pkgs.adwaita-icon-theme ];
+
+    # niri has no sticky windows; Zen's PiP is dragged along to whichever
+    # workspace becomes active on its own monitor.
+    systemd.user.services.niri-pip-follow = {
+      description = "Keep Zen's Picture-in-Picture window on the active workspace";
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = 2;
+        ExecStart = lib.getExe (pkgs.writeShellApplication {
+          name = "niri-pip-follow";
+          runtimeInputs = [ pkgs.niri pkgs.jq ];
+          text = ''
+            niri msg -j event-stream \
+              | jq --unbuffered -r 'select(.WorkspaceActivated.focused == true) | .WorkspaceActivated.id' \
+              | while read -r ws_id; do
+                  pip=$(niri msg -j windows | jq -r \
+                    '[.[] | select(.app_id == "zen-beta" and .title == "Picture-in-Picture")][0] // empty | "\(.id) \(.workspace_id)"')
+                  [ -n "$pip" ] || continue
+                  read -r pip_id pip_ws <<<"$pip"
+                  [ "$pip_ws" != "$ws_id" ] || continue
+
+                  # Index references resolve on the focused monitor, so only
+                  # follow switches on the monitor the PiP already lives on.
+                  target=$(niri msg -j workspaces | jq -r --argjson ws "$ws_id" --argjson pw "$pip_ws" \
+                    '(map(select(.id == $pw))[0].output) as $out
+                     | map(select(.id == $ws and .output == $out))[0].idx // empty')
+                  [ -n "$target" ] || continue
+
+                  niri msg action move-window-to-workspace --window-id "$pip_id" --focus false "$target"
+                done
+          '';
+        });
+      };
+    };
   };
 
   perSystem = { pkgs, lib, ... }:
@@ -303,8 +340,8 @@
               # Zen's PiP player sets this exact title.
               matches = [ { app-id = "^zen-beta$"; title = "^Picture-in-Picture$"; } ];
               open-floating = true;
-              default-column-width.fixed = 480;
-              default-window-height.fixed = 270;
+              default-column-width.fixed = 640;
+              default-window-height.fixed = 360;
             }
           ];
 
