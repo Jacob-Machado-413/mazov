@@ -8,12 +8,16 @@
     systemd.packages = [ pkgs.xdg-user-dirs pkgs.xdg-user-dirs-gtk ];
 
     environment.gnome.excludePackages = with pkgs; [
+      epiphany # gnome web
       gnome-music
       gnome-maps
       gnome-text-editor
       gnome-calendar
       gnome-contacts
       gnome-weather
+      gnome-connections
+      gnome-clocks
+      simple-scan # gnome document scanner
     ];
   };
 }

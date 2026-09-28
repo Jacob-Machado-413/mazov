@@ -12,6 +12,7 @@
 
         (pkgs.writeTextDir "share/nushell/vendor/autoload/aliases.nu" ''
           alias la = ls -a
+          alias cmatrix = unimatrix --speed 96
         '')
       ];
     };
