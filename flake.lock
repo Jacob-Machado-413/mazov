@@ -121,34 +121,35 @@
       },
       "locked": {
         "dir": "packages/nix",
-        "lastModified": 1790520975,
-        "narHash": "sha256-kk+bzZx7d+noy1YPrbt2Z0GBUzxKykU/+1clGCIPHQ8=",
+        "lastModified": 1789326337,
+        "narHash": "sha256-FWRCpoKQ8TywKkcCFleTSZRQhbL12JmbFdisaeIRIJU=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "847e0dad6c33ab9f11bdd4e7ca2e90cd26aef416",
+        "rev": "41f7356df31043e8c1429382dda95445530da987",
         "type": "github"
       },
       "original": {
         "dir": "packages/nix",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
+        "rev": "41f7356df31043e8c1429382dda95445530da987",
         "type": "github"
       }
     },
     "millennium-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790436335,
-        "narHash": "sha256-ghYUa4gPLV/VOflM2zkl/gtdwLWHQpRxG4boQoj4yKM=",
+        "lastModified": 1787082953,
+        "narHash": "sha256-zgr4cdJfye4qunpD3ClNnZ9D1WPGQAXV0CnYwEbB52s=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "765aa8802f8a4d942ad8ac8323a9e0f233a50fa8",
+        "rev": "513b02e809b0eb120ecf0ae12e548798dd756323",
         "type": "github"
       },
       "original": {
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "765aa8802f8a4d942ad8ac8323a9e0f233a50fa8",
+        "rev": "513b02e809b0eb120ecf0ae12e548798dd756323",
         "type": "github"
       }
     },
@@ -238,11 +239,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790614831,
-        "narHash": "sha256-PhsXIast+WJ82/8SKtIOFAaUFeqfyLClgod4XMY4PCs=",
+        "lastModified": 1790616962,
+        "narHash": "sha256-7ts1GMpvtnYHzQoYt64zjCMvxl5/GyMdWKiEpO4eKbA=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "48de1be176bec6768d057383b0e6b0570e007bb3",
+        "rev": "34f2cbd65501ad009bcc8a794b2bd628e97dd51a",
         "type": "github"
       },
       "original": {
