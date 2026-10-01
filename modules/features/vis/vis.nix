@@ -17,9 +17,8 @@
     };
 
     visPath = pkgs.runCommand "vis-path" { } ''
-      cp -r ${./vis} $out
-      chmod -R u+w $out
       mkdir -p $out/plugins $out/lexers
+      cp ${./visrc.lua} $out/visrc.lua
       ln -s ${visLspc} $out/plugins/vis-lspc
       ln -s ${scintillua}/lexers/nix.lua $out/lexers/nix.lua
       ln -s ${scintillua}/lexers/odin.lua $out/lexers/odin.lua
