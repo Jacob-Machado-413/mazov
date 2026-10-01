@@ -22,43 +22,12 @@
      self.nixosModules.xcompose
      self.nixosModules.webapps
      self.nixosModules.flutter
-     inputs.home-manager.nixosModules.home-manager
+     self.nixosModules.vis
     ];
 
   programs.noctalia = {
     enable = true;
     systemd.enable = true;
-  };
-
-  # home-manager is here only to deliver LazyVim; everything else on this host
-  # stays NixOS-managed.
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-
-    users."phyllistine" = { ... }: {
-      imports = [ inputs.lazyvim.homeManagerModules.default ];
-      home.stateVersion = config.system.stateVersion;
-
-      programs.lazyvim = {
-        enable = true;
-
-        # installDependencies pulls each extra's tools (rust-analyzer,
-        # csharpier, sqlfluff, ...); runtime deps come from this host already.
-        extras = {
-          ai.claudecode.enable = true;
-          # LazyVim turns blink on by default at runtime; declaring it is what
-          # puts it in the nix dev path instead of being cloned.
-          coding.blink.enable = true;
-          coding.yanky.enable = true;
-          lang.dotnet = { enable = true; installDependencies = true; };
-          lang.nix = { enable = true; installDependencies = true; };
-          lang.nushell.enable = true;
-          lang.rust = { enable = true; installDependencies = true; };
-          lang.sql = { enable = true; installDependencies = true; };
-        };
-      };
-    };
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -129,7 +98,6 @@
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.nushell;
     packages = with pkgs; [
-    #  thunderbird
       claude-code
       calibre
       vscodium
@@ -177,7 +145,8 @@
       kdePackages.ocean-sound-theme
       pantheon.elementary-sound-theme
       nix-search-tv
-      inputs.zen-browser.packages.${system}.default
+      zellij
+      self.packages.${system}.myZen
     ];
   };
 

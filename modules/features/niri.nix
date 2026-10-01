@@ -195,7 +195,7 @@
       };
 
       appBinds = {
-        "Mod+Shift+B".spawn-sh = lib.getExe inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        "Mod+Shift+B".spawn-sh = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.myZen;
         "Mod+Shift+N".spawn-sh = lib.getExe pkgs.vscodium;
         "Mod+Shift+F".spawn-sh = lib.getExe pkgs.nautilus;
         "Mod+Ctrl+T".spawn-sh = inTerminal (lib.getExe pkgs.btop);
@@ -311,7 +311,6 @@
             "HDMI-A-1".position = _: { props = { x = 0; y = 0; }; };
           };
 
-          # Pin the apps workspace to the Sceptre (left monitor, HDMI-A-1).
           workspaces."${appsWorkspace}".open-on-output = "HDMI-A-1";
 
           window-rules = [
@@ -335,6 +334,12 @@
               open-floating = true;
               default-column-width.fixed = 400;
               default-window-height.fixed = 600;
+            }
+            {
+              # Transparent Zen: no solid border fill behind the window, and
+              matches = [ { app-id = "^zen-beta$"; } ];
+              draw-border-with-background = false;
+              background-effect.blur = true;
             }
             {
               # Zen's PiP player sets this exact title.
