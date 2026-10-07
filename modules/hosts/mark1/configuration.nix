@@ -128,9 +128,9 @@
       fzf
       ripgrep
       fd
+      ffmpeg
       tokei
       tldr
-      todo
       yazi
       imagemagick
       gdb
