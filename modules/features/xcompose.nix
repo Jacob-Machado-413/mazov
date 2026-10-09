@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   # Compose(caps)+space+<key> expands to a stock string.
 
   # The sequences themselves live in ~/.XCompose

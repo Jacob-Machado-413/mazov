@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   #ai worked on this part more than the others, inshallah it works
   flake.nixosModules.webapps =
     { pkgs, ... }:

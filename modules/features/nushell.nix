@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   flake.nixosModules.nushell = { pkgs, lib, ... }: {
     programs.nushell = {
       enable = true;

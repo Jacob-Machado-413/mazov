@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   flake.nixosModules.retroarch = { pkgs, ... }: {
     environment.systemPackages = [
       (pkgs.retroarch.withCores (

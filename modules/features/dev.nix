@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   flake.nixosModules.dev = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       claude-code
@@ -9,6 +9,7 @@
       gh
       gdb
       tokei
+      statix
       odin
       ols
       dotnet-sdk_10

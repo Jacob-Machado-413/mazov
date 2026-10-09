@@ -14,6 +14,5 @@
 
   flake.nixosModules.zen = { pkgs, ... }: {
     environment.systemPackages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.myZen ];
-    programs.firefox.enable = true;
   };
 }

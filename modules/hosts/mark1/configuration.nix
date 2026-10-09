@@ -1,5 +1,9 @@
-{ self, inputs, ... }: {
-
+{ self, config, ... }:
+let
+  # The NixOS module below has its own `config`, which shadows this one.
+  inherit (config.mark1) user;
+in
+{
   flake.nixosModules.mark1Configuration =
     {
       pkgs,
@@ -68,7 +72,7 @@
         pulse.enable = true;
       };
 
-      users.users."phyllistine" = {
+      users.users.${user} = {
         isNormalUser = true;
         description = "jacob machado";
         extraGroups = [

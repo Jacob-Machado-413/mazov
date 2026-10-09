@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   flake.nixosModules.cli = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       btop

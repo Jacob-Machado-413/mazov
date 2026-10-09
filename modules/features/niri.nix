@@ -1,14 +1,27 @@
-{ self, inputs, ... }: {
+{
+  self,
+  inputs,
+  config,
+  ...
+}:
+let
+  cursor = {
+    theme = "Bibata-Modern-Ice";
+    size = 20;
+  };
+in
+{
   flake.nixosModules.niri = { pkgs, lib, ... }: {
     programs.niri = {
       enable = true;
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.myNiri;
     };
 
-    #XWayland apps (Steam, Proton games) read XCURSOR_THEME/SIZE
+    # niri only exports the cursor to its own children; XWayland apps (Steam,
+    # Proton games) launched from noctalia's systemd service read these.
     environment.sessionVariables = {
-      XCURSOR_THEME = "Bibata-Modern-Ice";
-      XCURSOR_SIZE = "20";
+      XCURSOR_THEME = cursor.theme;
+      XCURSOR_SIZE = toString cursor.size;
     };
     environment.systemPackages = [
       pkgs.bibata-cursors
@@ -334,27 +347,13 @@
           #Alt+Tab covers it instead, i hated this feature
           gestures.hot-corners.off = _: { };
 
-          cursor.xcursor-size = 20;
-          cursor.xcursor-theme = "Bibata-Modern-Ice";
+          cursor.xcursor-size = cursor.size;
+          cursor.xcursor-theme = cursor.theme;
 
           layout.gaps = 4;
           layout.default-column-width.proportion = 1.0;
 
-          # AOC 27B2 is physically on the right, Sceptre F24 on the left;
-          outputs = {
-            "DP-2".position = _: {
-              props = {
-                x = 1920;
-                y = -80;
-              };
-            };
-            "HDMI-A-1".position = _: {
-              props = {
-                x = 0;
-                y = 0;
-              };
-            };
-          };
+          outputs = lib.mapAttrs (_: pos: { position = _: { props = pos; }; }) config.mark1.monitors;
 
           workspaces."${appsWorkspace}".open-on-output = "HDMI-A-1";
 

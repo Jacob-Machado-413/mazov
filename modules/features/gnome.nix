@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   flake.nixosModules.gnome = { pkgs, ... }: {
     services.gnome.core-os-services.enable = true;
     services.gnome.core-apps.enable = true;
