@@ -3,7 +3,7 @@
     services.gnome.core-os-services.enable = true;
     services.gnome.core-apps.enable = true;
 
-    # core-shell (gnome-shell/mutter/gnome-session) stays off - niri is the actual
+    # core-shell (gnome-shell/mutter/gnome-session) stays off - niri is primary
     services.gvfs.enable = true;
     systemd.packages = [ pkgs.xdg-user-dirs pkgs.xdg-user-dirs-gtk ];
 

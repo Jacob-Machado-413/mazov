@@ -296,7 +296,7 @@
           
           input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
 
-          # trip into that corner; Alt+Tab covers it instead.
+          #Alt+Tab covers it instead, i hated this feature
           gestures.hot-corners.off = _: { };
 
           cursor.xcursor-size = 20;
@@ -315,7 +315,7 @@
 
           window-rules = [
             {
-              # No matches = applies to every window; enforces a small
+              # No matches = applies to every window
               matches = [ ];
               geometry-corner-radius = 4;
               clip-to-geometry = true;
@@ -336,7 +336,7 @@
               default-window-height.fixed = 600;
             }
             {
-              # Transparent Zen: no solid border fill behind the window, and
+              # Transparent Zen: 
               matches = [ { app-id = "^zen-beta$"; } ];
               draw-border-with-background = false;
               background-effect.blur = true;

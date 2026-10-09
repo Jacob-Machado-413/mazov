@@ -135,7 +135,7 @@
       imagemagick
       gdb
       gh
-      glib #gdbus, which noctalia's template reload scripts use to tell ghostty to
+      glib #gdbus, needed for ghostty themes
       godot
       lazygit
       python3
@@ -147,6 +147,7 @@
       nix-search-tv
       zellij
       self.packages.${system}.myZen
+      inputs.todo-odin.packages.${system}.todo
     ];
   };
 

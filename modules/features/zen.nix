@@ -1,6 +1,6 @@
 { inputs, ... }: {
   perSystem = { pkgs, ... }: {
-    # Prefs the Transparent Zen mod needs; pref() (not lockPref) keeps them
+    # Prefs the Transparent Zen mod needs
     packages.myZen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
       extraPrefs = ''
         pref("browser.tabs.allow_transparent_browser", true);

@@ -18,6 +18,24 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -221,8 +239,45 @@
         "nixpkgs-xwayland-satellite-081": "nixpkgs-xwayland-satellite-081",
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
+        "todo-odin": "todo-odin",
         "wrapper-modules": "wrapper-modules",
         "zen-browser": "zen-browser"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "todo-odin": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791416784,
+        "narHash": "sha256-pJaf2JGBPD42kGwEJtTG27C76tVJztYXetkORUH90DA=",
+        "owner": "Jacob-Machado-413",
+        "repo": "todo-odin",
+        "rev": "85ded525e7ef6af61867a0603006fd68ef1fcead",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Jacob-Machado-413",
+        "repo": "todo-odin",
+        "type": "github"
       }
     },
     "wrapper-modules": {
