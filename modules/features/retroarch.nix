@@ -4,34 +4,23 @@
       (pkgs.retroarch.withCores (
         libretro: with libretro; [
           bsnes
-          mame
-          mame2016
-          ppsspp
-          dolphin
-          mupen64plus
-          melonds
-          desmume
-          flycast
-          genesis-plus-gx
-          gambatte
+          mesen
+          sameboy
           mgba
-          snes9x
-          beetle-psx
+          mupen64plus
           beetle-psx-hw
           beetle-pce
-          beetle-pce-fast
-          beetle-supergrafx
-          scummvm
-          nestopia
-          sameboy
+          genesis-plus-gx
           picodrive
-          blastem
-          yabause
-          mesen
-          mesen-s
-          parallel-n64
-          play
+          mame
           fbneo
+          melonds
+          flycast
+          yabause
+          ppsspp
+          dolphin
+          play
+          scummvm
         ]
       ))
       pkgs.retroarch-assets

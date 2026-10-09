@@ -1,7 +1,17 @@
-{ self, inputs, ... }: {
-  flake.nixosConfigurations.mark1 = inputs.nixpkgs.lib.nixosSystem {
-    modules = [
-      self.nixosModules.mark1Configuration
-    ];
-  };
+{
+  self,
+  inputs,
+  withSystem,
+  ...
+}:
+{
+  flake.nixosConfigurations.mark1 = withSystem "x86_64-linux" (
+    { pkgs, ... }:
+    inputs.nixpkgs.lib.nixosSystem {
+      modules = [
+        { nixpkgs.pkgs = pkgs; }
+        self.nixosModules.mark1Configuration
+      ];
+    }
+  );
 }
