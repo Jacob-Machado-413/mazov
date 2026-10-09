@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{ self, inputs, ... }: {
   perSystem = { pkgs, ... }: {
     # Prefs the Transparent Zen mod needs
     packages.myZen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
@@ -10,5 +10,10 @@
         pref("widget.transparent-windows", true);
       '';
     };
+  };
+
+  flake.nixosModules.zen = { pkgs, ... }: {
+    environment.systemPackages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.myZen ];
+    programs.firefox.enable = true;
   };
 }

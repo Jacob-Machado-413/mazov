@@ -1,6 +1,6 @@
 { inputs, ... }: {
   flake.nixosModules.steam = { pkgs, ... }: {
-    # Millennium (steambrew.app) - Steam client theming/plugins. 
+    # Millennium (steambrew.app) - Steam client theming/plugins.
     # used for noctalia autotheming of steam
     nixpkgs.overlays = [ inputs.millennium.overlays.default ];
 

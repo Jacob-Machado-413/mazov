@@ -5,7 +5,9 @@
       "aarch64-linux"
     ];
 
-    perSystem = { system, ... }: {
+    perSystem = { system, pkgs, ... }: {
+      formatter = pkgs.nixfmt-tree;
+
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;

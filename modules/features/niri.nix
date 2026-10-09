@@ -10,7 +10,10 @@
       XCURSOR_THEME = "Bibata-Modern-Ice";
       XCURSOR_SIZE = "20";
     };
-    environment.systemPackages = [ pkgs.bibata-cursors pkgs.adwaita-icon-theme ];
+    environment.systemPackages = [
+      pkgs.bibata-cursors
+      pkgs.adwaita-icon-theme
+    ];
 
     # niri has no sticky windows; Zen's PiP is dragged along to whichever
     # workspace becomes active on its own monitor.
@@ -22,35 +25,41 @@
       serviceConfig = {
         Restart = "on-failure";
         RestartSec = 2;
-        ExecStart = lib.getExe (pkgs.writeShellApplication {
-          name = "niri-pip-follow";
-          runtimeInputs = [ pkgs.niri pkgs.jq ];
-          text = ''
-            niri msg -j event-stream \
-              | jq --unbuffered -r 'select(.WorkspaceActivated.focused == true) | .WorkspaceActivated.id' \
-              | while read -r ws_id; do
-                  pip=$(niri msg -j windows | jq -r \
-                    '[.[] | select(.app_id == "zen-beta" and .title == "Picture-in-Picture")][0] // empty | "\(.id) \(.workspace_id)"')
-                  [ -n "$pip" ] || continue
-                  read -r pip_id pip_ws <<<"$pip"
-                  [ "$pip_ws" != "$ws_id" ] || continue
+        ExecStart = lib.getExe (
+          pkgs.writeShellApplication {
+            name = "niri-pip-follow";
+            runtimeInputs = [
+              pkgs.niri
+              pkgs.jq
+            ];
+            text = ''
+              niri msg -j event-stream \
+                | jq --unbuffered -r 'select(.WorkspaceActivated.focused == true) | .WorkspaceActivated.id' \
+                | while read -r ws_id; do
+                    pip=$(niri msg -j windows | jq -r \
+                      '[.[] | select(.app_id == "zen-beta" and .title == "Picture-in-Picture")][0] // empty | "\(.id) \(.workspace_id)"')
+                    [ -n "$pip" ] || continue
+                    read -r pip_id pip_ws <<<"$pip"
+                    [ "$pip_ws" != "$ws_id" ] || continue
 
-                  # Index references resolve on the focused monitor, so only
-                  # follow switches on the monitor the PiP already lives on.
-                  target=$(niri msg -j workspaces | jq -r --argjson ws "$ws_id" --argjson pw "$pip_ws" \
-                    '(map(select(.id == $pw))[0].output) as $out
-                     | map(select(.id == $ws and .output == $out))[0].idx // empty')
-                  [ -n "$target" ] || continue
+                    # Index references resolve on the focused monitor, so only
+                    # follow switches on the monitor the PiP already lives on.
+                    target=$(niri msg -j workspaces | jq -r --argjson ws "$ws_id" --argjson pw "$pip_ws" \
+                      '(map(select(.id == $pw))[0].output) as $out
+                       | map(select(.id == $ws and .output == $out))[0].idx // empty')
+                    [ -n "$target" ] || continue
 
-                  niri msg action move-window-to-workspace --window-id "$pip_id" --focus false "$target"
-                done
-          '';
-        });
+                    niri msg action move-window-to-workspace --window-id "$pip_id" --focus false "$target"
+                  done
+            '';
+          }
+        );
       };
     };
   };
 
-  perSystem = { pkgs, lib, ... }:
+  perSystem =
+    { pkgs, lib, ... }:
     let
       noctaliaExe = lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
       ghosttyExe = lib.getExe pkgs.ghostty;
@@ -60,24 +69,39 @@
 
       # Ported from omarchy: SUPER+1..9,0 focuses workspace 1..10;
       workspaceBinds = lib.listToAttrs (
-        lib.concatMap
-          (n:
-            let
-              key = if n == 10 then "0" else toString n;
-            in
-            [
-              { name = "Mod+${key}"; value.focus-workspace = n; }
-              { name = "Mod+Shift+${key}"; value.move-window-to-workspace = n; }
-            ])
-          (lib.range 1 10)
+        lib.concatMap (
+          n:
+          let
+            key = if n == 10 then "0" else toString n;
+          in
+          [
+            {
+              name = "Mod+${key}";
+              value.focus-workspace = n;
+            }
+            {
+              name = "Mod+Shift+${key}";
+              value.move-window-to-workspace = n;
+            }
+          ]
+        ) (lib.range 1 10)
       );
 
       #mimicing omarchy/hyprland 'scratchpad' with a named workspace. its 80% as good
       appsWorkspace = "apps";
-      mkAppWorkspaceToggle = { appId, spawnCmd, extraInputs ? [ ] }:
+      mkAppWorkspaceToggle =
+        {
+          appId,
+          spawnCmd,
+          extraInputs ? [ ],
+        }:
         pkgs.writeShellApplication {
           name = "niri-toggle-${appId}";
-          runtimeInputs = [ pkgs.niri pkgs.jq ] ++ extraInputs;
+          runtimeInputs = [
+            pkgs.niri
+            pkgs.jq
+          ]
+          ++ extraInputs;
           text = ''
             app_id="${appId}"
             ws_name="${appsWorkspace}"
@@ -112,30 +136,30 @@
 
       coreBinds = {
         "Mod+Return".spawn-sh = ghosttyExe;
-        "Mod+Q".close-window = [];
+        "Mod+Q".close-window = [ ];
 
         "Print".spawn-sh = noctalia "screenshot-region";
         "Mod+O".spawn-sh = lib.getExe obsidianToggle;
         "Mod+Shift+O".spawn-sh = lib.getExe vesktopToggle;
         "Mod+Space".spawn-sh = noctalia "panel-toggle launcher";
-        "Mod+F".fullscreen-window = [];
+        "Mod+F".fullscreen-window = [ ];
 
         # Focus window/column (omarchy: SUPER + arrows)
-        "Mod+Left".focus-column-left = [];
-        "Mod+Right".focus-column-right = [];
-        "Mod+Up".focus-window-up = [];
-        "Mod+Down".focus-window-down = [];
+        "Mod+Left".focus-column-left = [ ];
+        "Mod+Right".focus-column-right = [ ];
+        "Mod+Up".focus-window-up = [ ];
+        "Mod+Down".focus-window-down = [ ];
 
         # Move/swap window/column (omarchy: SUPER+SHIFT + arrows)
-        "Mod+Shift+Left".move-column-left = [];
-        "Mod+Shift+Right".move-column-right = [];
-        "Mod+Shift+Up".move-window-up = [];
-        "Mod+Shift+Down".move-window-down = [];
+        "Mod+Shift+Left".move-column-left = [ ];
+        "Mod+Shift+Right".move-column-right = [ ];
+        "Mod+Shift+Up".move-window-up = [ ];
+        "Mod+Shift+Down".move-window-down = [ ];
 
         # Workspace cycling (omarchy: SUPER+TAB / SUPER+SHIFT+TAB / SUPER+CTRL+TAB)
-        "Mod+Tab".focus-workspace-down = [];
-        "Mod+Shift+Tab".focus-workspace-up = [];
-        "Mod+Ctrl+Tab".focus-workspace-previous = [];
+        "Mod+Tab".focus-workspace-down = [ ];
+        "Mod+Shift+Tab".focus-workspace-up = [ ];
+        "Mod+Ctrl+Tab".focus-workspace-previous = [ ];
 
         # Resize focused window/column (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
         "Mod+Minus".set-column-width = "-10%";
@@ -146,30 +170,30 @@
         "Mod+Shift+Equal".set-window-height = "+10%";
 
         # Scroll across the row of columns (omarchy: SUPER + scroll)
-        "Mod+WheelScrollDown".focus-column-right = [];
-        "Mod+WheelScrollUp".focus-column-left = [];
+        "Mod+WheelScrollDown".focus-column-right = [ ];
+        "Mod+WheelScrollUp".focus-column-left = [ ];
       };
 
       windowBinds = {
-        "Mod+T".toggle-window-floating = [];
-        "Mod+Alt+F".maximize-column = [];
-        "Mod+Ctrl+F".toggle-windowed-fullscreen = [];
+        "Mod+T".toggle-window-floating = [ ];
+        "Mod+Alt+F".maximize-column = [ ];
+        "Mod+Ctrl+F".toggle-windowed-fullscreen = [ ];
 
         # niri's tabbed columns stand in for omarchy's window groups.
-        "Mod+G".toggle-column-tabbed-display = [];
-        "Mod+Alt+Left".consume-or-expel-window-left = [];
-        "Mod+Alt+Right".consume-or-expel-window-right = [];
+        "Mod+G".toggle-column-tabbed-display = [ ];
+        "Mod+Alt+Left".consume-or-expel-window-left = [ ];
+        "Mod+Alt+Right".consume-or-expel-window-right = [ ];
 
         # noctalia's window-switcher stays unbound; it suits umbriel, not niri.
-        "Alt+Tab".toggle-overview = [];
-        "Ctrl+Alt+Tab".focus-monitor-next = [];
-        "Ctrl+Alt+Shift+Tab".focus-monitor-previous = [];
-        "Mod+Alt+Shift+Left".move-workspace-to-monitor-left = [];
-        "Mod+Alt+Shift+Right".move-workspace-to-monitor-right = [];
+        "Alt+Tab".toggle-overview = [ ];
+        "Ctrl+Alt+Tab".focus-monitor-next = [ ];
+        "Ctrl+Alt+Shift+Tab".focus-monitor-previous = [ ];
+        "Mod+Alt+Shift+Left".move-workspace-to-monitor-left = [ ];
+        "Mod+Alt+Shift+Right".move-workspace-to-monitor-right = [ ];
 
         # niri's own capture, kept for shots without annotation.
-        "Ctrl+Print".screenshot-screen = [];
-        "Alt+Print".screenshot-window = [];
+        "Ctrl+Print".screenshot-screen = [ ];
+        "Alt+Print".screenshot-window = [ ];
       };
 
       systemBinds = {
@@ -218,12 +242,10 @@
         "XF86MonBrightnessDown".spawn-sh = noctalia "brightness-down";
       };
 
-      lockedBinds = lib.mapAttrs
-        (_: action: _: {
-          props.allow-when-locked = true;
-          content = action;
-        })
-        mediaActions;
+      lockedBinds = lib.mapAttrs (_: action: _: {
+        props.allow-when-locked = true;
+        content = action;
+      }) mediaActions;
 
       plainBinds = coreBinds // workspaceBinds // windowBinds // systemBinds // appBinds // mediaActions;
 
@@ -239,32 +261,40 @@
       };
 
       # Store paths swamp the cheat sheet; only the program name is useful.
-      stripStorePaths = cmd:
+      stripStorePaths =
+        cmd:
         lib.concatStringsSep " " (
-          map (tok: if lib.hasPrefix builtins.storeDir tok then baseNameOf tok else tok)
-            (lib.splitString " " cmd)
+          map (tok: if lib.hasPrefix builtins.storeDir tok then baseNameOf tok else tok) (
+            lib.splitString " " cmd
+          )
         );
 
-      formatBindValue = v:
-        if v == [ ] then ""
-        else if builtins.isString v then " (${v})"
-        else if builtins.isInt v then " (${toString v})"
-        else "";
+      formatBindValue =
+        v:
+        if v == [ ] then
+          ""
+        else if builtins.isString v then
+          " (${v})"
+        else if builtins.isInt v then
+          " (${toString v})"
+        else
+          "";
 
-      describeBind = key: actionAttrs:
+      describeBind =
+        key: actionAttrs:
         let
           actionName = builtins.head (builtins.attrNames actionAttrs);
           actionValue = actionAttrs.${actionName};
         in
         bindLabelOverrides.${key} or (
-          if actionName == "spawn-sh"
-          then stripStorePaths actionValue
-          else "${lib.replaceStrings [ "-" ] [ " " ] actionName}${formatBindValue actionValue}"
+          if actionName == "spawn-sh" then
+            stripStorePaths actionValue
+          else
+            "${lib.replaceStrings [ "-" ] [ " " ] actionName}${formatBindValue actionValue}"
         );
 
       hotkeyListText = lib.concatLines (
-        lib.mapAttrsToList (key: actionAttrs: "${key}: ${describeBind key actionAttrs}")
-          plainBinds
+        lib.mapAttrsToList (key: actionAttrs: "${key}: ${describeBind key actionAttrs}") plainBinds
       );
 
       showHotkeys = pkgs.writeShellApplication {
@@ -282,7 +312,9 @@
         inherit pkgs;
         settings = {
           # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus (see the flake input comment for the underlying bug).
-          xwayland-satellite.path = lib.getExe inputs.nixpkgs-xwayland-satellite-081.legacyPackages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite;
+          xwayland-satellite.path =
+            lib.getExe
+              inputs.nixpkgs-xwayland-satellite-081.legacyPackages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite;
 
           screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
@@ -290,11 +322,14 @@
           prefer-no-csd = true;
 
           input.keyboard.xkb.layout = "us";
-          # Caps Lock becomes Compose (Multi_key), feeding the sequences in ~/.XCompose; 
+          # Caps Lock becomes Compose (Multi_key), feeding the sequences in ~/.XCompose;
           input.keyboard.xkb.options = "compose:caps,shift:both_capslock";
 
-          
-          input.focus-follows-mouse = _: { props = { max-scroll-amount = "0%"; }; };
+          input.focus-follows-mouse = _: {
+            props = {
+              max-scroll-amount = "0%";
+            };
+          };
 
           #Alt+Tab covers it instead, i hated this feature
           gestures.hot-corners.off = _: { };
@@ -307,8 +342,18 @@
 
           # AOC 27B2 is physically on the right, Sceptre F24 on the left;
           outputs = {
-            "DP-2".position = _: { props = { x = 1920; y = -80; }; };
-            "HDMI-A-1".position = _: { props = { x = 0; y = 0; }; };
+            "DP-2".position = _: {
+              props = {
+                x = 1920;
+                y = -80;
+              };
+            };
+            "HDMI-A-1".position = _: {
+              props = {
+                x = 0;
+                y = 0;
+              };
+            };
           };
 
           workspaces."${appsWorkspace}".open-on-output = "HDMI-A-1";
@@ -336,23 +381,31 @@
               default-window-height.fixed = 600;
             }
             {
-              # Transparent Zen: 
+              # Transparent Zen:
               matches = [ { app-id = "^zen-beta$"; } ];
               draw-border-with-background = false;
               background-effect.blur = true;
             }
             {
               # Zen's PiP player sets this exact title.
-              matches = [ { app-id = "^zen-beta$"; title = "^Picture-in-Picture$"; } ];
+              matches = [
+                {
+                  app-id = "^zen-beta$";
+                  title = "^Picture-in-Picture$";
+                }
+              ];
               open-floating = true;
               default-column-width.fixed = 640;
               default-window-height.fixed = 360;
             }
           ];
 
-          binds = plainBinds // lockedBinds // {
-            "Mod+K".spawn-sh = lib.getExe showHotkeys;
-          };
+          binds =
+            plainBinds
+            // lockedBinds
+            // {
+              "Mod+K".spawn-sh = lib.getExe showHotkeys;
+            };
         };
       };
     };

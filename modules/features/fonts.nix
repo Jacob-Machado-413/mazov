@@ -8,6 +8,9 @@
       pkgs.noto-fonts-cjk-serif
       pkgs.noto-fonts-color-emoji
     ];
-    fonts.fontconfig.defaultFonts.monospace = [ "FiraCode Nerd Font" "Fira Code" ];
+    fonts.fontconfig.defaultFonts.monospace = [
+      "FiraCode Nerd Font"
+      "Fira Code"
+    ];
   };
 }

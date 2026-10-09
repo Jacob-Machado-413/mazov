@@ -5,7 +5,10 @@
 
     # core-shell (gnome-shell/mutter/gnome-session) stays off - niri is primary
     services.gvfs.enable = true;
-    systemd.packages = [ pkgs.xdg-user-dirs pkgs.xdg-user-dirs-gtk ];
+    systemd.packages = [
+      pkgs.xdg-user-dirs
+      pkgs.xdg-user-dirs-gtk
+    ];
 
     environment.gnome.excludePackages = with pkgs; [
       epiphany # gnome web

@@ -2,7 +2,7 @@
   flake.nixosModules.nushell = { pkgs, lib, ... }: {
     programs.nushell = {
       enable = true;
-   
+
       #special starship nushell hack
       autoloads = [
         (pkgs.runCommand "starship-init.nu" { } ''
@@ -19,6 +19,9 @@
 
     # nushell is the default login shell;
     # bash stays available as fallback.
-    environment.shells = [ pkgs.nushell pkgs.bash ];
+    environment.shells = [
+      pkgs.nushell
+      pkgs.bash
+    ];
   };
 }

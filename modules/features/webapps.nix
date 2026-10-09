@@ -1,6 +1,7 @@
 { ... }: {
   #ai worked on this part more than the others, inshallah it works
-  flake.nixosModules.webapps = { pkgs, ... }:
+  flake.nixosModules.webapps =
+    { pkgs, ... }:
     let
       launch = pkgs.writeShellApplication {
         name = "webapp-launch";
@@ -70,6 +71,9 @@
       };
     in
     {
-      environment.systemPackages = [ launch install ];
+      environment.systemPackages = [
+        launch
+        install
+      ];
     };
 }

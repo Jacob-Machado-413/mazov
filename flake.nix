@@ -19,13 +19,13 @@
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Not in nixpkgs 
-    # Pinned: HEAD bumps millennium-src without updating the bun deps FOD hash 
+    # Not in nixpkgs
+    # Pinned: HEAD bumps millennium-src without updating the bun deps FOD hash
     millennium.url = "github:SteamClientHomebrew/Millennium/41f7356df31043e8c1429382dda95445530da987?dir=packages/nix";
 
-    # Pinned to the last commit with xwayland-satellite 0.8.1: 0.8.2 breaks Steam's popup menus 
+    # Pinned to the last commit with xwayland-satellite 0.8.1: 0.8.2 breaks Steam's popup menus
     nixpkgs-xwayland-satellite-081.url = "github:nixos/nixpkgs/a5cbcfe954791221bfffe2307f7d1a1bf61a871e";
   };
 
-  outputs = inputs: inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./modules);
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
