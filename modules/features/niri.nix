@@ -310,6 +310,23 @@ in
         lib.mapAttrsToList (key: actionAttrs: "${key}: ${describeBind key actionAttrs}") plainBinds
       );
 
+      # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus.
+      xwaylandSatellite = pkgs.xwayland-satellite.overrideAttrs (
+        finalAttrs: _: {
+          version = "0.8.1";
+          src = pkgs.fetchFromGitHub {
+            owner = "Supreeeme";
+            repo = "xwayland-satellite";
+            tag = "v${finalAttrs.version}";
+            hash = "sha256-BUE41HjLIGPjq3U8VXPjf8asH8GaMI7FYdgrIHKFMXA=";
+          };
+          cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+            inherit (finalAttrs) pname version src;
+            hash = "sha256-16L6gsvze+m7XCJlOA1lsPNELE3D364ef2FTdkh0rVY=";
+          };
+        }
+      );
+
       showHotkeys = pkgs.writeShellApplication {
         name = "niri-show-hotkeys";
         runtimeInputs = [ inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default ];
@@ -324,23 +341,22 @@ in
       packages.myNiri = inputs.wrapper-modules.wrappers.niri.wrap {
         inherit pkgs;
         settings = {
-          # Pinned to 0.8.1: 0.8.2 breaks Steam's dropdown/context menus (see the flake input comment for the underlying bug).
-          xwayland-satellite.path =
-            lib.getExe
-              inputs.nixpkgs-xwayland-satellite-081.legacyPackages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite;
+          xwayland-satellite.path = lib.getExe xwaylandSatellite;
 
           screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
           # Ask CSD-capable apps (mostly GTK) to drop their own titlebar/chrome
           prefer-no-csd = true;
 
-          input.keyboard.xkb.layout = "us";
-          # Caps Lock becomes Compose (Multi_key), feeding the sequences in ~/.XCompose;
-          input.keyboard.xkb.options = "compose:caps,shift:both_capslock";
+          input = {
+            keyboard.xkb.layout = "us";
+            # Caps Lock becomes Compose (Multi_key), feeding the sequences in ~/.XCompose;
+            keyboard.xkb.options = "compose:caps,shift:both_capslock";
 
-          input.focus-follows-mouse = _: {
-            props = {
-              max-scroll-amount = "0%";
+            focus-follows-mouse = _: {
+              props = {
+                max-scroll-amount = "0%";
+              };
             };
           };
 

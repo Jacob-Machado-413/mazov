@@ -10,6 +10,7 @@ _: {
       gdb
       tokei
       statix
+      deadnix
       odin
       ols
       dotnet-sdk_10

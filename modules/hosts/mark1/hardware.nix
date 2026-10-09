@@ -1,10 +1,9 @@
-{ self, inputs, ... }: {
+_: {
 
   flake.nixosModules.mark1Hardware =
     {
       config,
       lib,
-      pkgs,
       modulesPath,
       ...
     }:
@@ -14,25 +13,27 @@
         (modulesPath + "/installer/scan/not-detected.nix")
       ];
 
-      boot.initrd.availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "ahci"
-        "usbhid"
-        "usb_storage"
-        "sd_mod"
-      ];
-      boot.initrd.kernelModules = [ ];
-      # nvidia/nvidia_modeset/nvidia_drm aren't X-gated here like the NixOS nvidia
-      # module's own list - services.xserver.enable is false (niri is Wayland-only),
-      # so without this they'd depend on udev autoloading them correctly.
-      boot.kernelModules = [
-        "kvm-amd"
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_drm"
-      ];
-      boot.extraModulePackages = [ ];
+      boot = {
+        initrd.availableKernelModules = [
+          "nvme"
+          "xhci_pci"
+          "ahci"
+          "usbhid"
+          "usb_storage"
+          "sd_mod"
+        ];
+        initrd.kernelModules = [ ];
+        # nvidia/nvidia_modeset/nvidia_drm aren't X-gated here like the NixOS nvidia
+        # module's own list - services.xserver.enable is false (niri is Wayland-only),
+        # so without this they'd depend on udev autoloading them correctly.
+        kernelModules = [
+          "kvm-amd"
+          "nvidia"
+          "nvidia_modeset"
+          "nvidia_drm"
+        ];
+        extraModulePackages = [ ];
+      };
 
       fileSystems."/" = {
         device = "/dev/disk/by-uuid/0c67362e-45de-4b67-8500-a0016e7a183d";

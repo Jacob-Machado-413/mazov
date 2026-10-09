@@ -5,12 +5,7 @@ let
 in
 {
   flake.nixosModules.mark1Configuration =
-    {
-      pkgs,
-      lib,
-      config,
-      ...
-    }:
+    { pkgs, ... }:
     {
       imports = [
         self.nixosModules.niri
@@ -44,12 +39,14 @@ in
         systemd.enable = true;
       };
 
-      nix.settings = {
-        experimental-features = [
+      nix = {
+        settings.experimental-features = [
           "nix-command"
           "flakes"
         ];
-        auto-optimise-store = true;
+        # Dedupes the store on a timer instead of during every build.
+        optimise.automatic = true;
+        channel.enable = false;
       };
 
       boot.loader.systemd-boot.enable = true;
@@ -61,15 +58,16 @@ in
       time.timeZone = "America/Los_Angeles";
       i18n.defaultLocale = "en_US.UTF-8";
 
-      services.printing.enable = true;
-
-      services.pulseaudio.enable = false;
       security.rtkit.enable = true;
-      services.pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
+      services = {
+        printing.enable = true;
+        pulseaudio.enable = false;
+        pipewire = {
+          enable = true;
+          alsa.enable = true;
+          alsa.support32Bit = true;
+          pulse.enable = true;
+        };
       };
 
       users.users.${user} = {
