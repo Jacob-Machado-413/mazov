@@ -49,8 +49,12 @@ in
         channel.enable = false;
       };
 
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
+      boot.loader = {
+        systemd-boot.enable = true;
+        # /boot is a small vfat partition; old kernels/initrds would fill it.
+        systemd-boot.configurationLimit = 10;
+        efi.canTouchEfiVariables = true;
+      };
 
       networking.hostName = "mark1";
       networking.networkmanager.enable = true;
