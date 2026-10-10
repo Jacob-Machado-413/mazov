@@ -23,7 +23,7 @@ in
         self.nixosModules.gnome
         self.nixosModules.xcompose
         self.nixosModules.webapps
-        self.nixosModules.flutter
+        self.nixosModules.direnv
         self.nixosModules.vis
         self.nixosModules.zen
         self.nixosModules.dev

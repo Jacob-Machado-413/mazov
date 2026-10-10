@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "dev-templates": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781225543,
+        "narHash": "sha256-X/YTlfr7ohqCbvlveYPORPxm8g2pPOakFdUlkqLknVk=",
+        "owner": "the-nix-way",
+        "repo": "dev-templates",
+        "rev": "6a7eefd8fd910a831de525811393e499bc06dfa1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "the-nix-way",
+        "repo": "dev-templates",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -216,6 +236,7 @@
     },
     "root": {
       "inputs": {
+        "dev-templates": "dev-templates",
         "flake-parts": "flake-parts",
         "import-tree": "import-tree",
         "millennium": "millennium",

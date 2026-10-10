@@ -16,6 +16,9 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
+    dev-templates.url = "github:the-nix-way/dev-templates";
+    dev-templates.inputs.nixpkgs.follows = "nixpkgs";
+
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 
