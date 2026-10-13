@@ -22,6 +22,9 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 

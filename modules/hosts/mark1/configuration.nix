@@ -24,7 +24,7 @@ in
         self.nixosModules.xcompose
         self.nixosModules.webapps
         self.nixosModules.direnv
-        self.nixosModules.vis
+        self.nixosModules.nixvim
         self.nixosModules.zen
         self.nixosModules.dev
         self.nixosModules.cli
