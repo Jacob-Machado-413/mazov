@@ -19,6 +19,9 @@
     dev-templates.url = "github:the-nix-way/dev-templates";
     dev-templates.inputs.nixpkgs.follows = "nixpkgs";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 

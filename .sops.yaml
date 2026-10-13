@@ -1,0 +1,8 @@
+keys:
+  # ~/.ssh/id_ed25519 on mark1, via ssh-to-age
+  - &mark1 age1mulv6dd9p30y9ztpehhu0rv872jt786ea7kl3fpwgwrytmc8746s5xktwd
+creation_rules:
+  - path_regex: secrets\.yaml$
+    key_groups:
+      - age:
+          - *mark1
