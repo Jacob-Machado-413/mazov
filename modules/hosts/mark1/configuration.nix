@@ -32,6 +32,7 @@ in
         self.nixosModules.media
         self.nixosModules.desktop
         self.nixosModules.nh
+        self.nixosModules.topology
       ];
 
       programs.noctalia = {

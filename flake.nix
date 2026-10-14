@@ -25,6 +25,9 @@
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-topology.url = "github:oddlama/nix-topology";
+    nix-topology.inputs.nixpkgs.follows = "nixpkgs";
+
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 
