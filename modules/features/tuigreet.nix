@@ -8,6 +8,13 @@ in
   flake.nixosModules.tuigreet =
     { config, lib, pkgs, ... }:
     {
+      # Boot status lines otherwise keep printing onto the greeter's VT.
+      boot = {
+        kernelParams = [ "quiet" "udev.log_level=3" ];
+        consoleLogLevel = 3;
+        initrd.verbose = false;
+      };
+
       services.greetd = {
         enable = true;
         settings.default_session.command = builtins.concatStringsSep " " [
