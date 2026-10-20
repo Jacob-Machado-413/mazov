@@ -95,6 +95,44 @@
         "type": "github"
       }
     },
+    "grimoire": {
+      "inputs": {
+        "grimoire-social": "grimoire-social",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "vpkmerge": "vpkmerge"
+      },
+      "locked": {
+        "lastModified": 1791791941,
+        "narHash": "sha256-4JVjR8XCgdvDjjOSFqYE/KHoku8ekto89ZUWzX7j/08=",
+        "owner": "Slush97",
+        "repo": "grimoire",
+        "rev": "42c729ec2df78cff5eb8d1095b6efc113cbb699d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Slush97",
+        "repo": "grimoire",
+        "type": "github"
+      }
+    },
+    "grimoire-social": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785648456,
+        "narHash": "sha256-AR2rTNDuge19t+VAqL/I6dmB8f5niIqINmNnRL70k94=",
+        "owner": "Slush97",
+        "repo": "grimoire-social",
+        "rev": "e97a59d7cd55fc1ae1e11a56ca2fde5305de9c4f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Slush97",
+        "repo": "grimoire-social",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -335,6 +373,7 @@
       "inputs": {
         "dev-templates": "dev-templates",
         "flake-parts": "flake-parts",
+        "grimoire": "grimoire",
         "import-tree": "import-tree",
         "millennium": "millennium",
         "nix-topology": "nix-topology",
@@ -418,6 +457,23 @@
       "original": {
         "owner": "Jacob-Machado-413",
         "repo": "todo-odin",
+        "type": "github"
+      }
+    },
+    "vpkmerge": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791603794,
+        "narHash": "sha256-RmU2EWMDE0VmzInkTzjvkRpvEktLBDyKD47JMENOlYY=",
+        "owner": "Slush97",
+        "repo": "vpkmerge",
+        "rev": "b05118fc17b61f718d041cd546e03512c1a9f65d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Slush97",
+        "ref": "v0.21.1",
+        "repo": "vpkmerge",
         "type": "github"
       }
     },

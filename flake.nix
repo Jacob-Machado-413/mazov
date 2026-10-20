@@ -31,6 +31,9 @@
     todo-odin.url = "github:Jacob-Machado-413/todo-odin";
     todo-odin.inputs.nixpkgs.follows = "nixpkgs";
 
+    grimoire.url = "github:Slush97/grimoire";
+    grimoire.inputs.nixpkgs.follows = "nixpkgs";
+
     # Not in nixpkgs
     # Pinned: HEAD bumps millennium-src without updating the bun deps FOD hash
     millennium.url = "github:SteamClientHomebrew/Millennium/41f7356df31043e8c1429382dda95445530da987?dir=packages/nix";
