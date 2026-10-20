@@ -1,11 +1,17 @@
-_: {
+{ config, ... }:
+let
+  # The NixOS module below has its own `config`, which shadows this one.
+  inherit (config.mark1) monitors;
+  primary = "DP-2";
+in
+{
   flake.nixosModules.tuigreet =
-    { config, pkgs, ... }:
+    { config, lib, pkgs, ... }:
     {
       services.greetd = {
         enable = true;
         settings.default_session.command = builtins.concatStringsSep " " [
-          (pkgs.lib.getExe pkgs.tuigreet)
+          (lib.getExe pkgs.tuigreet)
           "--time"
           "--remember"
           "--remember-user-session"
@@ -13,6 +19,15 @@ _: {
           "--background matrix"
           "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions"
         ];
+      };
+
+      # The VT spans every display; this sizes it to the primary one only.
+      environment.etc."tuigreet/config.toml".source = (pkgs.formats.toml { }).generate "tuigreet.toml" {
+        outputs = lib.mapAttrsToList (connector: _: {
+          inherit connector;
+          primary = connector == primary;
+          enabled = connector == primary;
+        }) monitors;
       };
 
       # --remember* writes here as the greeter user.

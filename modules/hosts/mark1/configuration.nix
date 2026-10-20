@@ -11,7 +11,7 @@ in
         self.nixosModules.niri
         self.nixosModules.mark1Hardware
         self.nixosModules.noctalia
-        self.nixosModules.noctaliaGreeter
+        self.nixosModules.tuigreet
         self.nixosModules.git
         self.nixosModules.steam
         self.nixosModules.nushell
