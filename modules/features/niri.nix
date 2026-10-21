@@ -377,7 +377,7 @@ in
             {
               # No matches = applies to every window
               matches = [ ];
-              geometry-corner-radius = 4;
+              geometry-corner-radius = 0;
               clip-to-geometry = true;
             }
             {

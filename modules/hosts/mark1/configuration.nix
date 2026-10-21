@@ -63,9 +63,18 @@ in
       time.timeZone = "America/Los_Angeles";
       i18n.defaultLocale = "en_US.UTF-8";
 
-      security.rtkit.enable = true;
+      security = {
+        rtkit.enable = true;
+        # Echo an asterisk per typed password character.
+        sudo.extraConfig = "Defaults pwfeedback";
+      };
       services = {
         printing.enable = true;
+        # Resolves LAN hosts as <hostname>.local.
+        avahi = {
+          enable = true;
+          nssmdns4 = true;
+        };
         pulseaudio.enable = false;
         pipewire = {
           enable = true;

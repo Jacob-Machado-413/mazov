@@ -4,7 +4,7 @@ _: {
       audacity
       obs-studio
       spotify
-      calibre
+      # calibre
     ];
   };
 }
