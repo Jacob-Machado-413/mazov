@@ -233,7 +233,7 @@ in
 
       appBinds = {
         "Mod+Shift+B".spawn-sh = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.myZen;
-        "Mod+Shift+N".spawn-sh = lib.getExe pkgs.vscodium;
+        "Mod+Shift+N".spawn-sh = lib.getExe pkgs.vscode;
         "Mod+Shift+F".spawn-sh = lib.getExe pkgs.nautilus;
         "Mod+Ctrl+T".spawn-sh = inTerminal (lib.getExe pkgs.btop);
         "Mod+Shift+M".spawn-sh = inTerminal (lib.getExe pkgs.spotify-player);
@@ -371,7 +371,7 @@ in
 
           outputs = lib.mapAttrs (_: pos: { position = _: { props = pos; }; }) config.mark1.monitors;
 
-          workspaces."${appsWorkspace}".open-on-output = "HDMI-A-1";
+          workspaces."${appsWorkspace}".open-on-output = config.mark1.appsMonitor;
 
           window-rules = [
             {

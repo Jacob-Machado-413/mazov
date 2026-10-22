@@ -1,16 +1,23 @@
 { config, ... }:
 let
   # The NixOS module below has its own `config`, which shadows this one.
-  inherit (config.mark1) monitors;
-  primary = "DP-2";
+  inherit (config.mark1) monitors primaryMonitor;
 in
 {
   flake.nixosModules.tuigreet =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       # Boot status lines otherwise keep printing onto the greeter's VT.
       boot = {
-        kernelParams = [ "quiet" "udev.log_level=3" ];
+        kernelParams = [
+          "quiet"
+          "udev.log_level=3"
+        ];
         consoleLogLevel = 3;
         initrd.verbose = false;
       };
@@ -32,8 +39,8 @@ in
       environment.etc."tuigreet/config.toml".source = (pkgs.formats.toml { }).generate "tuigreet.toml" {
         outputs = lib.mapAttrsToList (connector: _: {
           inherit connector;
-          primary = connector == primary;
-          enabled = connector == primary;
+          primary = connector == primaryMonitor;
+          enabled = connector == primaryMonitor;
         }) monitors;
       };
 

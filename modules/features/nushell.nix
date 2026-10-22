@@ -10,6 +10,11 @@ _: {
           ${lib.getExe pkgs.starship} init nu > $out/share/nushell/vendor/autoload/starship-init.nu
         '')
 
+        (pkgs.writeTextDir "share/nushell/vendor/autoload/settings.nu" ''
+          $env.config.show_banner = false
+          $env.config.buffer_editor = "nvim"
+        '')
+
         (pkgs.writeTextDir "share/nushell/vendor/autoload/aliases.nu" ''
           alias la = ls -a
           alias cmatrix = unimatrix --speed 96

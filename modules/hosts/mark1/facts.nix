@@ -10,6 +10,10 @@
         }
       );
     };
+    # Sole output tuigreet draws on.
+    primaryMonitor = lib.mkOption { type = lib.types.str; };
+    # Output that niri's "apps" workspace opens on.
+    appsMonitor = lib.mkOption { type = lib.types.str; };
   };
 
   config.mark1 = {
@@ -26,5 +30,7 @@
         y = -80;
       };
     };
+    primaryMonitor = "DP-2";
+    appsMonitor = "HDMI-A-1";
   };
 }
