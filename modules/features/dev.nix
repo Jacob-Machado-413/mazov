@@ -21,13 +21,14 @@ _: {
         gh
         gdb
         tokei
+        nixfmt
         statix
         deadnix
         odin
         ols
         python3
         godot
-	cloc
+        cloc
       ];
 
       # Stable path for VS Code's dotnetAcquisitionExtension.existingDotnetPath. C# and Dev Kit request the
