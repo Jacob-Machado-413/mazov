@@ -27,6 +27,7 @@ _: {
         ols
         python3
         godot
+	cloc
       ];
 
       # Stable path for VS Code's dotnetAcquisitionExtension.existingDotnetPath. C# and Dev Kit request the

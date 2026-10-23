@@ -1,0 +1,9 @@
+*, *::before, *::after { border-radius: 0 !important; }
+
+/* Pseudo-elements `*` doesn't reach; separate rules so an unknown one only drops itself. */
+::file-selector-button { border-radius: 0 !important; }
+::-moz-range-thumb { border-radius: 0 !important; }
+::-moz-range-track { border-radius: 0 !important; }
+::-moz-range-progress { border-radius: 0 !important; }
+::-moz-progress-bar { border-radius: 0 !important; }
+::-moz-meter-bar { border-radius: 0 !important; }
