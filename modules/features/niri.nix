@@ -147,8 +147,60 @@ in
         extraInputs = [ pkgs.vesktop ];
       };
 
+      # New windows open full-width; halve the focused column, then halve the
+      # new terminal once niri focuses it.
+      splitTerminal = pkgs.writeShellApplication {
+        name = "niri-split-terminal";
+        runtimeInputs = [
+          pkgs.niri
+          pkgs.jq
+        ];
+        text = ''
+          before=$(niri msg -j focused-window | jq -r '.id // empty')
+          niri msg action set-column-width 50%
+          ${ghosttyExe} &
+
+          for _ in $(seq 50); do
+            now=$(niri msg -j focused-window | jq -r '.id // empty')
+            if [ -n "$now" ] && [ "$now" != "$before" ]; then
+              niri msg action set-column-width 50%
+              exit 0
+            fi
+            sleep 0.1
+          done
+        '';
+      };
+
+      # niri only resizes by fixed steps; this snaps the focused window to the
+      # nearest power-of-two fraction of the output and moves one step from there.
+      scaleWindow = pkgs.writeShellApplication {
+        name = "niri-scale-window";
+        runtimeInputs = [
+          pkgs.niri
+          pkgs.jq
+        ];
+        text = ''
+          axis=$1 # width or height
+          step=$2 # -1 halves, 1 doubles
+          case $axis in
+            width) idx=0 action=set-column-width ;;
+            height) idx=1 action=set-window-height ;;
+            *) exit 1 ;;
+          esac
+
+          tile=$(niri msg -j focused-window | jq -r --argjson i "$idx" '.layout.tile_size[$i] // empty')
+          [ -n "$tile" ] || exit 0
+          out=$(niri msg -j focused-output | jq -r --arg a "$axis" '.logical[$a]')
+
+          pct=$(jq -nr --argjson t "$tile" --argjson o "$out" --argjson s "$step" \
+            '(($t / $o) | log2 | round) + $s | [., -3] | max | [., 0] | min | pow(2; .) * 100')
+          niri msg action "$action" "$pct%"
+        '';
+      };
+
       coreBinds = {
         "Mod+Return".spawn-sh = ghosttyExe;
+        "Mod+Shift+Return".spawn-sh = lib.getExe splitTerminal;
         "Mod+Q".close-window = [ ];
 
         "Print".spawn-sh = noctalia "screenshot-region";
@@ -174,13 +226,13 @@ in
         "Mod+Shift+Tab".focus-workspace-up = [ ];
         "Mod+Ctrl+Tab".focus-workspace-previous = [ ];
 
-        # Resize focused window/column (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
-        "Mod+Minus".set-column-width = "-10%";
-        "Mod+Equal".set-column-width = "+10%";
+        # Halve/double focused column width (omarchy: SUPER+MINUS shrinks, SUPER+EQUAL grows)
+        "Mod+Minus".spawn-sh = "${lib.getExe scaleWindow} width -1";
+        "Mod+Equal".spawn-sh = "${lib.getExe scaleWindow} width 1";
 
         # Same pair with SHIFT resizes vertically (omarchy: SUPER+SHIFT+MINUS/EQUAL)
-        "Mod+Shift+Minus".set-window-height = "-10%";
-        "Mod+Shift+Equal".set-window-height = "+10%";
+        "Mod+Shift+Minus".spawn-sh = "${lib.getExe scaleWindow} height -1";
+        "Mod+Shift+Equal".spawn-sh = "${lib.getExe scaleWindow} height 1";
 
         # Scroll across the row of columns (omarchy: SUPER + scroll)
         "Mod+WheelScrollDown".focus-column-right = [ ];
@@ -265,6 +317,11 @@ in
       # shortcut label overrides
       bindLabelOverrides = {
         "Mod+Return" = "open a terminal";
+        "Mod+Shift+Return" = "split with a new terminal";
+        "Mod+Minus" = "halve column width";
+        "Mod+Equal" = "double column width";
+        "Mod+Shift+Minus" = "halve window height";
+        "Mod+Shift+Equal" = "double window height";
         "Mod+O" = "toggle obsidian";
         "Mod+Shift+O" = "toggle vesktop";
         "Mod+Space" = "open launcher";

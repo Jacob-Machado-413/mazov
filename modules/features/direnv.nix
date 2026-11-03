@@ -18,7 +18,8 @@ _: {
             return
           }
 
-          direnv export json | from json | default {} | update cells --columns [ PATH ] {
+          # nushell env names are case-insensitive, so a devShell's `shell` would clobber SHELL
+          direnv export json | from json | default {} | reject --optional shell | update cells --columns [ PATH ] {
             # If direnv changes the PATH, it will become a string and we need to re-convert it to a list
             do (env-conversions).path.from_string $in
           } | load-env
