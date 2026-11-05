@@ -19,7 +19,6 @@ in
           "udev.log_level=3"
         ];
         consoleLogLevel = 3;
-        initrd.verbose = false;
       };
 
       services.greetd = {

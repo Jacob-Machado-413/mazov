@@ -75,7 +75,7 @@ in
     { pkgs, lib, ... }:
     let
       noctaliaExe = lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      ghosttyExe = lib.getExe pkgs.ghostty;
+      ghosttyExe = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.myGhostty;
 
       noctalia = cmd: "${noctaliaExe} msg ${cmd}";
       inTerminal = cmd: "${ghosttyExe} -e ${cmd}";
@@ -136,7 +136,7 @@ in
         };
 
       obsidianToggle = mkAppWorkspaceToggle {
-        appId = "md.Obsidian";
+        appId = "md.obsidian.Obsidian";
         spawnCmd = lib.getExe pkgs.obsidian;
         extraInputs = [ pkgs.obsidian ];
       };
@@ -438,7 +438,7 @@ in
               clip-to-geometry = true;
             }
             {
-              matches = [ { app-id = "^md\\.Obsidian$"; } ];
+              matches = [ { app-id = "^md\\.obsidian\\.Obsidian$"; } ];
               open-on-workspace = appsWorkspace;
             }
             {

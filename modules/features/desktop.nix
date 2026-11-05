@@ -1,7 +1,7 @@
-{ inputs, ... }: {
+{ self, inputs, ... }: {
   flake.nixosModules.desktop = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [
-      ghostty
+      self.packages.${stdenv.hostPlatform.system}.myGhostty
       glib # gdbus, needed for ghostty themes
       obsidian
       basalt
@@ -15,4 +15,18 @@
       inputs.todo-odin.packages.${pkgs.stdenv.hostPlatform.system}.todo
     ];
   };
+
+  perSystem =
+    { pkgs, ... }:
+    {
+      packages.myGhostty = inputs.wrapper-modules.wrappers.ghostty.wrap {
+        inherit pkgs;
+        settings = {
+          # Noctalia generates this into ~/.config/ghostty/themes.
+          theme = "noctalia";
+          background-opacity = "0.9";
+          keybind = [ "ctrl+enter=unbind" ];
+        };
+      };
+    };
 }
