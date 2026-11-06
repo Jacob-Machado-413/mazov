@@ -25,6 +25,7 @@
           # Noctalia generates this into ~/.config/ghostty/themes.
           theme = "noctalia";
           background-opacity = "0.9";
+          confirm-close-surface = false;
           keybind = [ "ctrl+enter=unbind" ];
         };
       };

@@ -5,6 +5,9 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
 
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
+
     wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
 
     noctalia.url = "github:noctalia-dev/noctalia";

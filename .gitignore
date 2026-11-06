@@ -1,2 +1,4 @@
 result
 TEST
+.direnv
+.pre-commit-config.yaml
